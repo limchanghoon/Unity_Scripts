@@ -63,7 +63,15 @@ public class Player_Move : MonoBehaviour
     {
         GameManager GM = GameObject.Find("GM").GetComponent<GameManager>();
         if (pv)
-            GM.targets[pv.ViewID / 1000 - 1] = transform;
+        {
+            GM.target_count++;
+            int tmp = pv.ViewID;
+            while (tmp > 9)
+            {
+                tmp /= 10;
+            }
+            GM.targets[tmp - 1] = transform;
+        }
         
 
         if (pv && !pv.IsMine)

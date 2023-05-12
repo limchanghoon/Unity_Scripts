@@ -19,8 +19,8 @@ public class Tantacle : Monster
 
     public override void Hit(int damage, Vector3 point)
     {
-        if (start_anim)
-            damage = 0;
+        if (start_anim || isDied)
+            return;
         pv.RPC("Hit_RPC", RpcTarget.All, damage, point);
     }
 
@@ -56,7 +56,7 @@ public class Tantacle : Monster
             material.SetFloat("_Cutoff", t);
             yield return null;
         }
-        Debug.Log("Tantacle is dissolved!");
+        //Debug.Log("Tantacle is dissolved!");
         material.SetFloat("_Cutoff", 1);
         Destroy(gameObject);
     }
@@ -65,7 +65,7 @@ public class Tantacle : Monster
     {
         if (other.gameObject.tag == "Player" && b_Attack)
         {
-            Debug.Log(name + " Hit " + other.gameObject.name + " : " + 10);
+            //Debug.Log(name + " Hit " + other.gameObject.name + " : " + 10);
             other.gameObject.GetComponent<Player_HP>().Hit(10);
         }
     }

@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 using Random = UnityEngine.Random;
@@ -21,9 +22,9 @@ public class Gun : MonoBehaviour
     [SerializeField] private TextMeshProUGUI bullet_text;
 
     // 필요한 오브젝트
-    [SerializeField] private GameObject hit_effect;
-    [SerializeField] private GameObject muzzleFlash_effect;
-    [SerializeField] private GameObject bulletTrail;
+    GameObject[] hit_effects;
+    public GameObject[] muzzleFlash_effects;
+    GameObject[] bulletTrails;
     [SerializeField] private GameObject Magazine_prefab;
 
     // 레이저 충돌 정보 받아옴.
@@ -42,22 +43,22 @@ public class Gun : MonoBehaviour
 
     private void Start()
     {
-        if (!pv.IsMine)
+        GameManager GM = GameObject.Find("GM").GetComponent<GameManager>();
+        hit_effects = GM.hit_effects;
+        bulletTrails = GM.bulletTrails;
+        muzzleFlash_effects = GM.muzzleFlash_effects;
+        if (pv && !pv.IsMine)
             return;
         layerMask = (-1) - (1 << LayerMask.NameToLayer("Player"));
-        GameManager GM = GameObject.Find("GM").GetComponent<GameManager>();
-        if (GM != null)
-        {
-            bullet_text = GM.bullet_text;
-            theCam = GM.main_camera;
-        }
+        bullet_text = GM.bullet_text;
+        theCam = GM.main_camera;
         Cursor.lockState = CursorLockMode.Locked;
         UpdateBulletUI();
     }
 
     private void Update()
     {
-        if (!pv.IsMine)
+        if (pv && !pv.IsMine)
             return;
         /*
         if (Input.GetKeyDown(KeyCode.Space))
@@ -79,7 +80,10 @@ public class Gun : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R) && remaining_Bullet_cnt > 0 && current_Bullet_cnt < magazine_size)
         {
             isReload = true;
-            pv.RPC("Reload_RPC", RpcTarget.All);
+            if (pv)
+                pv.RPC("Reload_RPC", RpcTarget.All);
+            else
+                Reload_RPC();
         }
         else if (Input.GetMouseButton(0))
         {
@@ -91,7 +95,10 @@ public class Gun : MonoBehaviour
                 if (remaining_Bullet_cnt > 0)
                 {
                     isReload = true;
-                    pv.RPC("Reload_RPC", RpcTarget.All);
+                    if (pv)
+                        pv.RPC("Reload_RPC", RpcTarget.All);
+                    else
+                        Reload_RPC();
                 }
 
                 return;
@@ -184,30 +191,39 @@ public class Gun : MonoBehaviour
         bulletCtrl.SetDamage(Random.Range(40, 61));
         bulletCtrl.AddForce();
         */
-        GameObject muzzleFlash_effect_clone = Instantiate(muzzleFlash_effect, fire_pos.position, fire_pos.rotation, fire_pos);
-        Destroy(muzzleFlash_effect_clone, 2f);
-
-        if (pv.IsMine)
+        foreach(GameObject muzzleFlash_effect in muzzleFlash_effects)
         {
-            Shoot_Ray();
-
-            current_Bullet_cnt--;
-            UpdateBulletUI();
-
-            bool recoil_right = Random.Range(0f, 1f) < 0.5 ? true : false;
-            float recoil_h = Random.Range(0f, 1f);
-            float recoil_v = Random.Range(1f, 1.2f);
-
-            player_Move.SetRecoil(recoil_right, recoil_h, recoil_v);
+            if (!muzzleFlash_effect.activeSelf)
+            {
+                muzzleFlash_effect.transform.parent = fire_pos;
+                muzzleFlash_effect.transform.localPosition= Vector3.zero;
+                muzzleFlash_effect.transform.localEulerAngles= Vector3.zero;
+                //fire_pos
+                muzzleFlash_effect.SetActive(true);
+                break;
+            }
         }
+        if (pv && !pv.IsMine)
+            return;
+
+        Shoot_Ray();
+
+        current_Bullet_cnt--;
+        UpdateBulletUI();
+
+        bool recoil_right = Random.Range(0f, 1f) < 0.5 ? true : false;
+        float recoil_h = Random.Range(0f, 1f);
+        float recoil_v = Random.Range(1f, 1.2f);
+
+        player_Move.SetRecoil(recoil_right, recoil_h, recoil_v);
+        
     }
 
     private void UpdateBulletUI()
     {
-        if (pv.IsMine)
-        {
-            bullet_text.SetText("<size=30>" + current_Bullet_cnt.ToString() + "</size>/" + remaining_Bullet_cnt.ToString());
-        }
+        if (pv && !pv.IsMine)
+            return;
+        bullet_text.SetText("<size=30>" + current_Bullet_cnt.ToString() + "</size>/" + remaining_Bullet_cnt.ToString());
     }
 
     private void Shoot_Ray()
@@ -221,8 +237,10 @@ public class Gun : MonoBehaviour
                 int maxDamage = damage + 11;
                 hitInfo.transform.GetComponent<IHit>().Hit(Random.Range(minDamage, maxDamage), hitInfo.point);
             }
-
-            pv.RPC("SpawnTrailRPC", RpcTarget.All, hitInfo.point, hitInfo.normal);
+            if (pv)
+                pv.RPC("SpawnTrailRPC", RpcTarget.All, hitInfo.point, hitInfo.normal);
+            else
+                SpawnTrailRPC(hitInfo.point, hitInfo.normal);
         }
     }
 
@@ -233,28 +251,46 @@ public class Gun : MonoBehaviour
         if (Vector3.Distance(startPosition, hit_point) > 5f)
         {
             float time = 0;
-            GameObject trail_obj = Instantiate(bulletTrail, startPosition, Quaternion.identity);
-            TrailRenderer trail = trail_obj.GetComponent<TrailRenderer>();
+            int i = 0;
+            for (; i < bulletTrails.Length; i++)
+            {
+                if (!bulletTrails[i].activeSelf)
+                {
+                    bulletTrails[i].transform.position = startPosition;
+                    bulletTrails[i].transform.rotation = Quaternion.identity;
+                    bulletTrails[i].SetActive(true);
+                    break;
+                }
+            }
+            TrailRenderer trail = bulletTrails[i].GetComponent<TrailRenderer>();
 
             while (time < 1)
             {
-                trail_obj.transform.position = Vector3.Lerp(startPosition, hit_point, time);
+                bulletTrails[i].transform.position = Vector3.Lerp(startPosition, hit_point, time);
                 time += Time.deltaTime / trail.time;
 
                 yield return null;
             }
 
-            trail_obj.transform.position = hit_point;
-            Destroy(trail_obj, trail.time);
+            bulletTrails[i].transform.position = hit_point;
+            yield return new WaitForSeconds(trail.time);
+            bulletTrails[i].SetActive(false);
         }
     }
 
     [PunRPC]
     private void SpawnTrailRPC(Vector3 hit_point, Vector3 hit_normal)
     {
-        //GameObject hit_effect_clone = Instantiate(hit_effect, hit_point, Quaternion.LookRotation(hit_normal), _tr);
-        GameObject hit_effect_clone = Instantiate(hit_effect, hit_point, Quaternion.LookRotation(hit_normal));
-        Destroy(hit_effect_clone, 5f);
+        foreach (GameObject hit_effect in hit_effects)
+        {
+            if (!hit_effect.activeSelf)
+            {
+                hit_effect.transform.position = hit_point;
+                hit_effect.transform.rotation = Quaternion.LookRotation(hit_normal);
+                hit_effect.SetActive(true);
+                break;
+            }
+        }
         StartCoroutine(SpawnTrailCoroutine(hit_point));
     }
 

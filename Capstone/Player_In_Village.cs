@@ -1,22 +1,53 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Player_In_Village : MonoBehaviour
 {
-    private bool entering = false;
-    private void OnTriggerEnter(Collider other)
-    {
-        if (entering)
-            return;
+    public GameObject euipment_UI;
+    public GameObject party_UI;
 
-        Debug.Log("OnTriggerEnter : " + other.name);
-        if (other.tag == "Portal")
+    private void Awake()
+    {
+        InventoryController.Instance.Read_Inventory();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.I))
         {
-            Debug.Log("Portal : " + other.name);
-            entering = true;
-            LoadingSceneController.Instance.LoadScene("SampleScene");
+            if (!InventoryController.Instance.canvas.enabled)
+            {
+                InventoryController.Instance.canvas.sortingOrder = ETC_Memory.Instance.top_orderLayer++;
+                InventoryController.Instance.Read_Inventory();
+            }
+            InventoryController.Instance.canvas.enabled = !InventoryController.Instance.canvas.enabled;
+        }
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            if (!EquipmentWindowController.Instance.canvas.enabled)
+            {
+                EquipmentWindowController.Instance.canvas.sortingOrder = ETC_Memory.Instance.top_orderLayer++;
+            }
+            EquipmentWindowController.Instance.canvas.enabled = !EquipmentWindowController.Instance.canvas.enabled;
+        }
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            party_UI.GetComponent<Canvas>().sortingOrder = ETC_Memory.Instance.top_orderLayer++;
+            party_UI.SetActive(!party_UI.activeSelf);
         }
     }
+
+    public void Close_Euipment_UI()
+    {
+        euipment_UI.SetActive(false);
+    }
+
+    public void Close_Party_UI()
+    {
+        party_UI.SetActive(false);
+    }
+
 }

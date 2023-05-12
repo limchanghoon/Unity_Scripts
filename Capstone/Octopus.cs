@@ -269,13 +269,15 @@ public class Octopus : Monster
         t_oldPos = t_Targets[current_tantacle].position;
         tantacles[current_tantacle].b_Attack = true;
 
-        if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient && GM.target_count != 1)
         {
             int _ran = UnityEngine.Random.Range(0, 10);
             if (_ran == 0)
             {
+                int i = 0;
                 while (true)
                 {
+                    i++;
                     int _r = Gen_target_index();
                     if(_r != target_index)
                     {
@@ -465,7 +467,7 @@ public class Octopus : Monster
     {   
         while (true)
         {
-            int _r = UnityEngine.Random.Range(0, GM.targets.Count);
+            int _r = UnityEngine.Random.Range(0, GM.target_count);
             if (GM.targets[_r] != null)
             {
                 return _r;
@@ -512,6 +514,12 @@ public class Octopus : Monster
         StartCoroutine(HammerDissolve());
         dont_update = true;
         animator.Play("Die");
+    }
+
+    public void View_Reward_UI()
+    {
+        RewardController.Instance.LoadReward_UI();
+        CFirebase.Instance.GetItem("Stone_0", 100);
     }
 
     public void Explosion()

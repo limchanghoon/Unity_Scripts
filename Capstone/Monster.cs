@@ -5,6 +5,7 @@ using Photon.Pun;
 using UnityEngine.UI;
 using UnityEngine.AI;
 using TMPro;
+using Unity.VisualScripting;
 
 public class Monster : MonoBehaviour, IHit
 {
@@ -20,8 +21,9 @@ public class Monster : MonoBehaviour, IHit
     [SerializeField] protected GameObject canvasObj;
     [SerializeField] protected GameObject hpBarObj;
     public GameObject[] damageTextObjs;
-    [SerializeField] private GameObject death_effect;
+    [SerializeField] private GameObject[] death_effects;
     [SerializeField] private Popping_Cube[] pops;
+    List<GameObject> pop_objs = new List<GameObject>();
 
     // º¯¼ö
     [SerializeField] protected float maxHp;
@@ -35,15 +37,14 @@ public class Monster : MonoBehaviour, IHit
     public Vector3 respawnPos;
     public Quaternion respawnRot;
 
-    protected bool isChased = false;
-    protected bool isDied = false;
+    public bool isDied = false;
 
     // Start is called before the first frame update
     protected virtual void Start()
     {
         animator = GetComponent<Animator>();
-        hpBar.value = curHp / maxHp;
         curHp = maxHp;
+        hpBar.value = curHp / maxHp;
     }
 
     // Update is called once per frame
@@ -101,16 +102,30 @@ public class Monster : MonoBehaviour, IHit
         }
         foreach (Popping_Cube pop in pops)
         {
-            pop.PopCube();
+            pop_objs.Add(pop.PopCube());
         }
 
         if (nav != null)
             nav.isStopped = true;
+        foreach (GameObject death_effect in death_effects)
+        {
+            if (!death_effect.activeSelf)
+            {
+                death_effect.transform.position = transform.position;
+                death_effect.SetActive(true);
+                break;
+            }
+        }
+        if(pop_objs.Count > 0)
+            StartCoroutine(DestroyCoroutine());
+    }
 
-        if (death_effect!=null)
-            death_effect.SetActive(true);
 
-        Destroy(gameObject,10f);
+    IEnumerator DestroyCoroutine()
+    {
+        yield return new WaitForSeconds(8);
+        foreach (GameObject obj in pop_objs)
+            Destroy(obj);
     }
 
 
@@ -118,12 +133,25 @@ public class Monster : MonoBehaviour, IHit
     {
         transform.position = respawnPos;
         transform.rotation = respawnRot;
-        isChased = false;
-        isDied = false;
+
+        if (nav != null)
+            nav.isStopped = false;
+
+        foreach (MeshRenderer mesh in meshes)
+        {
+            mesh.enabled = true;
+        }
+        foreach (Collider col in colliders)
+        {
+            col.enabled = true;
+        }
 
         curHp = maxHp;
+        hpBar.value = curHp / maxHp;
         hpBarObj.SetActive(true);
 
-        animator.Rebind();
+        isDied = false;
+        if(animator != null)
+            animator.Rebind();
     }
 }

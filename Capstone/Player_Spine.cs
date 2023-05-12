@@ -31,6 +31,15 @@ public class Player_Spine : MonoBehaviour
 
     }
 
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            Cursor.visible = !Cursor.visible;
+            Cursor.lockState = CursorLockMode.Confined;
+        }
+    }
+
     public void Send_Rox(float _rox)
     {
         pv.RPC("Send_Rox_RPC", RpcTarget.Others, _rox);

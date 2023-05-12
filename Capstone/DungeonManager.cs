@@ -38,12 +38,14 @@ public class DungeonManager : MonoBehaviourPunCallbacks
     // 게임 실행과 동시에 마스터 서버 접속 시도
     void Start()
     {
+        //CFirebase.Instance.ReadUserData();
         // 접속에 필요한 정보(게임 버전) 설정
         PhotonNetwork.GameVersion = gameVersion;
         // 설정한 정보를 가지고 마스터 서버 접속 시도
         PhotonNetwork.ConnectUsingSettings();
 
-        PhotonNetwork.LocalPlayer.NickName = "임시 이름";
+        PhotonNetwork.LocalPlayer.NickName = Player_Info.Instance.nickName;
+        
         // 룸 생성 버튼을 잠시 비활성화
         createPartyButton.interactable = false;
         quitPartyButton.interactable = false;
@@ -51,6 +53,11 @@ public class DungeonManager : MonoBehaviourPunCallbacks
 
         // 접속을 시도 중임을 텍스트로 표시
         connectionInfoText.text = "마스터 서버에 접속중...";
+
+        if (PhotonNetwork.InRoom)
+        {
+            OnJoinedRoom();
+        }
     }
 
     #region 방리스트 갱신
@@ -163,7 +170,7 @@ public class DungeonManager : MonoBehaviourPunCallbacks
         else
         {
             // 마스터 서버에 접속중이 아니라면, 마스터 서버에 접속 시도
-            connectionInfoText.text = "오프라인 : 마스터 서버와 연결되지 않음\n접속 재시도중...";
+            connectionInfoText.text = "오프라인 : 접속 재시도중...";
 
             // 마스터 서버로의 재접속 시도
             PhotonNetwork.ConnectUsingSettings();
@@ -187,7 +194,8 @@ public class DungeonManager : MonoBehaviourPunCallbacks
     private void allPlayerStart()
     {
         //PhotonNetwork.LoadLevel("Main");
-        PhotonNetwork.LoadLevel("SampleScene");
+        //PhotonNetwork.LoadLevel("SampleScene");
+        LoadingLevelController.Instance.LoadLevel("SampleScene");
     }
 
     // 다른 플레이어가 룸 생성중 룸을 만들었기 때문에 실패함; JoinOrCreateRoom 덕분에 필요가 없긴하다
@@ -215,14 +223,16 @@ public class DungeonManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             // 반장이 바뀌면 준비에서 시작으로 변경! 해당 상태도 준비상태에서 해제해야함!!!
-            connectionInfoText.text = "방 참가 성공(방장) / 당신의 닉네임 : " + PhotonNetwork.LocalPlayer.NickName;
+            connectionInfoText.text = "방 참가 성공(방장) : " + PhotonNetwork.LocalPlayer.NickName;
             startButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "시작";
+            startButton.interactable = true;
             //startButtonObj.SetActive(true);
         }
         else
         {
-            connectionInfoText.text = "방 참가 성공(참가자) / 당신의 닉네임 : " + PhotonNetwork.LocalPlayer.NickName;
+            connectionInfoText.text = "방 참가 성공(참가자) : " + PhotonNetwork.LocalPlayer.NickName;
             startButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "준비";
+            startButton.interactable = false;
         }
         Debug.Log("방장 바뀜");
         //myPhotonView.RPC("updateUI", RpcTarget.All);
@@ -284,17 +294,19 @@ public class DungeonManager : MonoBehaviourPunCallbacks
         startButton.interactable = true;
 
         updateUIForJoin();
-        connectionInfoText.text = "방 참가 성공(참가자) / 당신의 닉네임 : " + PhotonNetwork.LocalPlayer.NickName;
+        connectionInfoText.text = "방 참가 성공(참가자) : " + PhotonNetwork.LocalPlayer.NickName;
         Debug.Log("방 참가 성공");
         if (PhotonNetwork.IsMasterClient)
         {
             startButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "시작";
+            startButton.interactable = true;
             //startButtonObj.SetActive(true);
             //leaveRoomButtonObj.SetActive(true);
         }
         else
         {
             startButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "준비";
+            startButton.interactable = false;
             //leaveRoomButtonObj.SetActive(true);
         }
         // 모든 룸 참가자들이 Main 씬을 로드하게 함
@@ -312,7 +324,7 @@ public class DungeonManager : MonoBehaviourPunCallbacks
         }
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
         {
-            cur_RoomCellBtns[i].transform.GetChild(0).GetComponent<Text>().text = PhotonNetwork.PlayerList[i].NickName + i;
+            cur_RoomCellBtns[i].transform.GetChild(0).GetComponent<Text>().text = PhotonNetwork.PlayerList[i].NickName;
         }
     }
 
