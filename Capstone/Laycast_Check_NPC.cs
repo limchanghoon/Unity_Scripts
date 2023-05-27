@@ -9,6 +9,8 @@ public class Laycast_Check_NPC : MonoBehaviour
     int layerMask;
     public float range;
 
+    public GameObject keyboard_help;
+
     Camera theCam;
     public Outline curOutline = null;
 
@@ -30,6 +32,8 @@ public class Laycast_Check_NPC : MonoBehaviour
                     _outline.On_Outline();
                     if (curOutline != null)
                         curOutline.Off_Outline();
+                    else
+                        keyboard_help.SetActive(true);
                     curOutline = _outline;
                 }
             }
@@ -37,8 +41,11 @@ public class Laycast_Check_NPC : MonoBehaviour
         else
         {
             if (curOutline != null)
+            {
                 curOutline.Off_Outline();
-            curOutline = null;
+                curOutline = null;
+                keyboard_help.SetActive(false);
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.F) && curOutline != null)

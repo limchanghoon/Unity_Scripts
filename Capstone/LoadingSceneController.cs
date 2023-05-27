@@ -4,26 +4,21 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
+using Firebase.Database;
 
 public class LoadingSceneController : MonoBehaviour
 {
-    private static LoadingSceneController instance;
+    private static LoadingSceneController instance = null;
     public static LoadingSceneController Instance
     {
-        get 
+        get
         {
-            var obj = FindObjectOfType<LoadingSceneController>();
-            if (obj != null)
+            if (null == instance)
             {
-                instance = obj;
-            }
-            else
-            {
-                instance = Create();
+                return Create();
             }
             return instance;
         }
-
     }
 
     private static LoadingSceneController Create()
@@ -33,12 +28,15 @@ public class LoadingSceneController : MonoBehaviour
 
     private void Awake()
     {
-        if(Instance != this)
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
         {
             Destroy(gameObject);
-            return;
         }
-        DontDestroyOnLoad(gameObject);
     }
 
     [SerializeField]

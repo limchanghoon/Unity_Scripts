@@ -2,22 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Firebase.Database;
 
 public class Player_Info : MonoBehaviour
 {
-    private static Player_Info instance;
+    private static Player_Info instance = null;
+
     public static Player_Info Instance
     {
         get
         {
-            var obj = FindObjectOfType<Player_Info>();
-            if (obj != null)
+            if (null == instance)
             {
-                instance = obj;
-            }
-            else
-            {
-                instance = Create();
+                return Create();
             }
             return instance;
         }
@@ -29,16 +26,46 @@ public class Player_Info : MonoBehaviour
         return Instantiate(Resources.Load<Player_Info>("Player_Info"));
     }
 
-    public string nickName = "";
+
+    private string _nickName = string.Empty;
+
+    public string nickName
+    {
+        get
+        {
+            return _nickName;
+        }
+        set
+        {
+            if(_nickName == string.Empty)
+            {
+                _nickName = value;
+                StatsWindowController.Instance.nickName_text.text = "캐릭터명 : " + _nickName;
+            }
+        }
+    }
+    public int attack = 0;
+    public int defense = 0;
 
     private void Awake()
     {
-        if (Instance != this)
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
         {
             Destroy(gameObject);
-            return;
         }
-        DontDestroyOnLoad(gameObject);
+    }
+
+    [ContextMenu("장비 스텟 가져오기!")]
+    public void UpdateStats()
+    {
+        Debug.Log("UpdateStats");
+        EquipmentWindowController.Instance.GetEquipmentStats(ref attack, ref defense);
+        StatsWindowController.Instance.UpdateStats();
     }
 
 }

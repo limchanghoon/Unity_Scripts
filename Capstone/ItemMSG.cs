@@ -14,15 +14,19 @@ public class ItemMSG : MonoBehaviour
 
     public void SetMSG(string str)
     {
-        StopCoroutine(SetMSGCoroutine());
+        //UnityMainThreadDispatcher.Instance().Enqueue(SetMSGCoroutine(str));
         m_TextMeshProUGUI.text = str;
         m_TextMeshProUGUI.alpha = 1.0f;
         transform.SetAsFirstSibling();
-        StartCoroutine(SetMSGCoroutine());
+
+        StartCoroutine(SetMSGCoroutine(str));
     }
 
-    IEnumerator SetMSGCoroutine()
+    IEnumerator SetMSGCoroutine(string str)
     {
+        m_TextMeshProUGUI.text = str;
+        m_TextMeshProUGUI.alpha = 1.0f;
+        transform.SetAsFirstSibling();
         while (m_TextMeshProUGUI.alpha > 0.0f)
         {
             yield return null;

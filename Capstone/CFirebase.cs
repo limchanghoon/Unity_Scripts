@@ -9,25 +9,21 @@ using TMPro;
 using Google.MiniJSON;
 using Unity.VisualScripting;
 using ExitGames.Client.Photon.StructWrapping;
-using static UnityEditor.Progress;
 using System.Security.Cryptography;
-using UnityEditor.Experimental.GraphView;
+using System.Threading.Tasks;
+using System.Linq;
+using static QuestController;
 
 public class CFirebase : MonoBehaviour
 {
-    private static CFirebase instance;
+    private static CFirebase instance = null;
     public static CFirebase Instance
     {
         get
         {
-            var obj = FindObjectOfType<CFirebase>();
-            if (obj != null)
+            if(null == instance)
             {
-                instance = obj;
-            }
-            else
-            {
-                instance = Create();
+                return Create();
             }
             return instance;
         }
@@ -40,14 +36,17 @@ public class CFirebase : MonoBehaviour
 
     private void Awake()
     {
-        itemMSGController = ItemMSGController.Instance;
-        if (Instance != this)
+        if (instance == null)
+        {
+            instance = this;
+            itemMSGController = ItemMSGController.Instance;
+            m_Reference = FirebaseDatabase.DefaultInstance.RootReference;
+            DontDestroyOnLoad(gameObject);
+        }
+        else 
         {
             Destroy(gameObject);
-            return;
         }
-        DontDestroyOnLoad(gameObject);
-        m_Reference = FirebaseDatabase.DefaultInstance.RootReference;
     }
 
     private DatabaseReference m_Reference;
@@ -107,10 +106,56 @@ public class CFirebase : MonoBehaviour
         });
     }
 
-    public void WriteAccountInfo(string uid, string firstThing)
+    public void WriteAccountInfo(string uid, string nickName)
     {
-        // 첫번째 파라미터가 유저 닉네임
-        m_Reference.Child("account").Child(uid).Child("first Character").SetValueAsync(firstThing);
+        m_Reference.Child("account").Child(uid).Child("first Character").SetValueAsync(nickName);
+    }
+
+    [ContextMenu("DB에 퀘스트 등록")]
+    public void WriteAllQuest()
+    {
+        QuestData quest = new QuestData("첫번째 심부름", "사이퍼 월드에 오신 것을 환영합니다. 앞으로의 활약을 기대합니다. 곧바로 첫번째 퀘스트를 드리겠습니다."
+            , new string[] { "Box Dragon" }, new int[] { 10 }, new int[1] 
+            , new string[] { "Stone_1" }, new int[] { 10 }, new int[1]
+            , null, null);
+        string json = JsonUtility.ToJson(quest);
+        m_Reference.Child("users").Child(Player_Info.Instance.nickName).Child("퀘스트").Child("시작가능")
+            .Child(quest.questName).SetRawJsonValueAsync(json);
+
+        quest = new QuestData("두번째 심부름", "두번째 내용은 귀찮으니까 스킵할게! 그럼 이만 ^^7"
+            , new string[] { "Box Dragon", "Box Dragon2" }, new int[] { 20, 20 }, new int[2]
+            , null, null, null
+            , null, null);
+        json = JsonUtility.ToJson(quest);
+        m_Reference.Child("users").Child(Player_Info.Instance.nickName).Child("퀘스트").Child("시작가능")
+            .Child(quest.questName).SetRawJsonValueAsync(json);
+    }
+
+    public void Accept_Quest(QuestData quest)
+    {
+        string json = JsonUtility.ToJson(quest);
+        m_Reference.Child("users").Child(Player_Info.Instance.nickName).Child("퀘스트").Child("진행중")
+            .Child(quest.questName).SetRawJsonValueAsync(json);
+
+        m_Reference.Child("users").Child(Player_Info.Instance.nickName).Child("퀘스트").Child("시작가능")
+            .Child(quest.questName).SetValueAsync(null);
+    }
+
+    public void GiveUp_Quest(QuestData quest)
+    {
+        string json = JsonUtility.ToJson(quest);
+        m_Reference.Child("users").Child(Player_Info.Instance.nickName).Child("퀘스트").Child("시작가능")
+            .Child(quest.questName).SetRawJsonValueAsync(json);
+
+        m_Reference.Child("users").Child(Player_Info.Instance.nickName).Child("퀘스트").Child("진행중")
+            .Child(quest.questName).SetValueAsync(null);
+    }
+
+    public void Set_Quest_Completed_Monster(QuestData quest, int index)
+    {
+        m_Reference.Child("users").Child(Player_Info.Instance.nickName).Child("퀘스트").Child("진행중")
+            .Child(quest.questName).Child("completed_monster_counts")
+            .Child(index.ToString()).SetValueAsync(quest.completed_monster_counts[index]);
     }
 
     public void GetItem(string _name, int _count)
@@ -186,9 +231,9 @@ public class CFirebase : MonoBehaviour
             });
     }
 
-    public void GetWeapon(int _id, string _name, int _level, int _power)
+    public void GetWeapon(int _id, string _name, int _level, int _attack)
     {
-        Weapon_ItemData test_Item = new Weapon_ItemData(_id, _name, '0', _level, _power);
+        Weapon_ItemData test_Item = new Weapon_ItemData(Guid.NewGuid().ToString(),_id, _name, 0, _level, _attack);
 
         string json = JsonUtility.ToJson(test_Item);
         m_Reference.Child("users").Child(Player_Info.Instance.nickName)
@@ -198,9 +243,9 @@ public class CFirebase : MonoBehaviour
         ReadEquipments();
     }
 
-    public void GetArmor(int _id, string _name, char _part,int _level, int _defense)
+    public void GetArmor(int _id, string _name, int _part,int _level, int _defense)
     {
-        Equipment_ItemData test_Item = new Equipment_ItemData(_id, _name, _part, _level);
+        Armor_ItemData test_Item = new Armor_ItemData(Guid.NewGuid().ToString(), _id, _name, _part, _level, _defense);
 
         string json = JsonUtility.ToJson(test_Item);
         m_Reference.Child("users").Child(Player_Info.Instance.nickName)
@@ -219,7 +264,15 @@ public class CFirebase : MonoBehaviour
         ReadEquipments();
     }
 
-    public void WearWeapon(string _name, ItemData_MonoBehaviour itemData_MonoBehaviour)
+    public void WearEquipment(ItemData itemData, ItemData_MonoBehaviour itemData_MonoBehaviour)
+    {
+        if (((Equipment_ItemData)itemData).part == 0)
+            WearWeapon(itemData.itemName, itemData_MonoBehaviour);
+        else
+            WearArmor(itemData.itemName, itemData_MonoBehaviour);
+    }
+
+    private void WearWeapon(string _name, ItemData_MonoBehaviour itemData_MonoBehaviour)
     {
         m_Reference.Child("users").Child(Player_Info.Instance.nickName).Child("인벤토리").Child("장비").Child(_name)
            .GetValueAsync().ContinueWithOnMainThread(task =>
@@ -233,14 +286,14 @@ public class CFirebase : MonoBehaviour
                    Debug.Log("WearEquipment");
                    DataSnapshot snapshot = task.Result;
 
-                   int idx = Convert.ToInt32(snapshot.Child("part").Value) - 48;
-                   EquipmentWindowController.Instance.cells[idx].gameObject.SetActive(true);
+                   int idx = Convert.ToInt32(snapshot.Child("part").Value);
 
-                   Weapon_ItemData test_Item = new Weapon_ItemData(Convert.ToInt32(snapshot.Child("id").Value)
+                   Weapon_ItemData test_Item = new Weapon_ItemData(Convert.ToString(snapshot.Child("uuid").Value)
+                            , Convert.ToInt32(snapshot.Child("id").Value)
                             , Convert.ToString(snapshot.Child("itemName").Value)
-                            , '0'
+                            , 0
                             , Convert.ToInt32(snapshot.Child("level").Value)
-                            , Convert.ToInt32(snapshot.Child("power").Value));
+                            , Convert.ToInt32(snapshot.Child("attack").Value));
                    string json = JsonUtility.ToJson(test_Item);
                    m_Reference.Child("users").Child(Player_Info.Instance.nickName)
                    .Child("인벤토리").Child("착용중").Child(test_Item.itemName).SetRawJsonValueAsync(json);
@@ -253,15 +306,57 @@ public class CFirebase : MonoBehaviour
                    itemData_MonoBehaviour.itemData = test_Item;
 
                    EquipmentWindowController.Instance.cells[idx].sprite
-                            = Resources.Load("Images/Items/" + Convert.ToString(snapshot.Child("itemName").Value), typeof(Sprite)) as Sprite;
+                            = Resources.Load("Images/Items/Gun/" + Convert.ToString(snapshot.Child("itemName").Value), typeof(Sprite)) as Sprite;
+                   EquipmentWindowController.Instance.SetLevel(idx);
+
+                   Player_Info.Instance.UpdateStats();
                }
 
            });
     }
 
-    public void WearArmor()
+    private void WearArmor(string _name, ItemData_MonoBehaviour itemData_MonoBehaviour)
     {
+        m_Reference.Child("users").Child(Player_Info.Instance.nickName).Child("인벤토리").Child("장비").Child(_name)
+        .GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted)
+            {
+                // Handle the error...
+            }
+            else if (task.IsCompleted)
+            {
+                Debug.Log("WearEquipment");
+                DataSnapshot snapshot = task.Result;
 
+                int idx = Convert.ToInt32(snapshot.Child("part").Value);
+
+                Armor_ItemData test_Item = new Armor_ItemData(Convert.ToString(snapshot.Child("uuid").Value)
+                         , Convert.ToInt32(snapshot.Child("id").Value)
+                         , Convert.ToString(snapshot.Child("itemName").Value)
+                         , Convert.ToInt32(snapshot.Child("part").Value)
+                         , Convert.ToInt32(snapshot.Child("level").Value)
+                         , Convert.ToInt32(snapshot.Child("defense").Value));
+                string json = JsonUtility.ToJson(test_Item);
+                m_Reference.Child("users").Child(Player_Info.Instance.nickName)
+                .Child("인벤토리").Child("착용중").Child(test_Item.itemName).SetRawJsonValueAsync(json);
+
+                m_Reference.Child("users").Child(Player_Info.Instance.nickName)
+                 .Child("인벤토리").Child("장비").Child(test_Item.itemName)
+                 .SetValueAsync(null).ContinueWithOnMainThread(task => { ReadEquipments(); });
+
+                EquipmentWindowController.Instance.equipments[idx] = test_Item;
+                itemData_MonoBehaviour.itemData = test_Item;
+
+                string path = "Images/Items/" + InventoryController.part_names[test_Item.part] + "/" 
+                    + Convert.ToString(snapshot.Child("itemName").Value);
+                EquipmentWindowController.Instance.cells[idx].sprite = Resources.Load(path, typeof(Sprite)) as Sprite;
+                EquipmentWindowController.Instance.SetLevel(idx);
+
+                Player_Info.Instance.UpdateStats();
+            }
+
+        });
     }
 
     public void TakeOffWeapon(string _name)
@@ -277,11 +372,12 @@ public class CFirebase : MonoBehaviour
                else if (task.IsCompleted)
                {
                    DataSnapshot snapshot = task.Result;
-                   Weapon_ItemData test_Item = new Weapon_ItemData(Convert.ToInt32(snapshot.Child("id").Value)
+                   Weapon_ItemData test_Item = new Weapon_ItemData(Convert.ToString(snapshot.Child("uuid").Value)
+                     , Convert.ToInt32(snapshot.Child("id").Value)
                      , Convert.ToString(snapshot.Child("itemName").Value)
-                     , Convert.ToChar(snapshot.Child("part").Value)
+                     , Convert.ToInt32(snapshot.Child("part").Value)
                      , Convert.ToInt32(snapshot.Child("level").Value)
-                     , Convert.ToInt32(snapshot.Child("power").Value));
+                     , Convert.ToInt32(snapshot.Child("attack").Value));
 
                    string json = JsonUtility.ToJson(test_Item);
                    m_Reference.Child("users").Child(Player_Info.Instance.nickName)
@@ -291,24 +387,57 @@ public class CFirebase : MonoBehaviour
                        .Child("인벤토리").Child("장비").Child(_name).SetRawJsonValueAsync(json)
                        .ContinueWithOnMainThread(tast => { ReadEquipments(); });
 
-                   int idx = Convert.ToInt32(test_Item.part) - 48;
-                   var weapon_data = new Weapon_ItemData();
-                   EquipmentWindowController.Instance.equipments[idx] = weapon_data;
-                   EquipmentWindowController.Instance.cells[idx].gameObject.GetComponent<ItemData_MonoBehaviour>().itemData = weapon_data;
-                   EquipmentWindowController.Instance.cells[idx].sprite
-                    = Resources.Load("Images/Items/pistol1_back", typeof(Sprite)) as Sprite;
+                   int idx = test_Item.part;
+                   EquipmentWindowController.Instance.equipments[idx] = null;
+                   EquipmentWindowController.Instance.cells[idx].gameObject.GetComponent<ItemData_MonoBehaviour>().itemData = new ItemData();
+                   EquipmentWindowController.Instance.CellToEmpty(idx);
+
+                   Player_Info.Instance.UpdateStats();
                }
            });
     }
 
     public void TakeOffArmor(string _name)
     {
-       
+        m_Reference.Child("users").Child(Player_Info.Instance.nickName).Child("인벤토리").Child("착용중").Child(_name)
+        .GetValueAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted)
+            {
+                // Handle the error...
+                Debug.Log("IsFaulted");
+            }
+            else if (task.IsCompleted)
+            {
+                DataSnapshot snapshot = task.Result;
+                Armor_ItemData test_Item = new Armor_ItemData(Convert.ToString(snapshot.Child("uuid").Value)
+                  , Convert.ToInt32(snapshot.Child("id").Value)
+                  , Convert.ToString(snapshot.Child("itemName").Value)
+                  , Convert.ToInt32(snapshot.Child("part").Value)
+                  , Convert.ToInt32(snapshot.Child("level").Value)
+                  , Convert.ToInt32(snapshot.Child("defense").Value));
+
+                string json = JsonUtility.ToJson(test_Item);
+                m_Reference.Child("users").Child(Player_Info.Instance.nickName)
+                    .Child("인벤토리").Child("착용중").Child(_name).SetValueAsync(null);
+
+                m_Reference.Child("users").Child(Player_Info.Instance.nickName)
+                    .Child("인벤토리").Child("장비").Child(_name).SetRawJsonValueAsync(json)
+                    .ContinueWithOnMainThread(tast => { ReadEquipments(); });
+
+                int idx = test_Item.part;
+                EquipmentWindowController.Instance.equipments[idx] = null;
+                EquipmentWindowController.Instance.cells[idx].gameObject.GetComponent<ItemData_MonoBehaviour>().itemData = new ItemData();
+                EquipmentWindowController.Instance.CellToEmpty(idx);
+
+                Player_Info.Instance.UpdateStats();
+            }
+        });
     }
 
     public void SwitchEquipment()
     {
-
+        Player_Info.Instance.UpdateStats();
     }
 
     public void ReadNickName()
@@ -330,10 +459,116 @@ public class CFirebase : MonoBehaviour
         });
     }
 
-    public void ReadItems()
+    public async void ReadItems()
+    {
+        Debug.Log("ReadItems");
+        InventoryController inventory = InventoryController.Instance;
+        Task<DataSnapshot> resultTask =
+            m_Reference.Child("users").Child(Player_Info.Instance.nickName).Child("인벤토리")
+            .Child("기타").GetValueAsync();
+        await resultTask;
+        DataSnapshot snapshot = resultTask.Result;
+
+        int i = 0;
+        foreach (var item in snapshot.Children)
+        {
+            inventory.etcs[i++] =
+                new ETC_ItemData(Convert.ToString(item.Child("itemName").Value), Convert.ToInt32(item.Child("count").Value));
+        }
+        for (; i < inventory.cells.Length; i++)
+        {
+            inventory.etcs[i] = null;
+        }
+        if (inventory.curWindow == 2)
+            inventory.Update_ETC_Inventory();
+    }
+
+    public async void ReadEquipments()
     {
         InventoryController inventory = InventoryController.Instance;
-        m_Reference.Child("users").Child(Player_Info.Instance.nickName).Child("인벤토리").Child("기타")
+        Task<DataSnapshot> resultTask =
+            m_Reference.Child("users").Child(Player_Info.Instance.nickName).Child("인벤토리")
+            .Child("장비").GetValueAsync();
+        await resultTask;
+        DataSnapshot snapshot = resultTask.Result;
+
+        int i = 0;
+        foreach (var item in snapshot.Children)
+        {
+            if (Convert.ToInt32(item.Child("part").Value) == 0)
+            {
+                inventory.equipments[i++]
+                    = new Weapon_ItemData(Convert.ToString(snapshot.Child("uuid").Value)
+                    , Convert.ToInt32(item.Child("id").Value)
+                    , Convert.ToString(item.Child("itemName").Value)
+                    , Convert.ToInt32(item.Child("part").Value)
+                    , Convert.ToInt32(item.Child("level").Value)
+                    , Convert.ToInt32(item.Child("attack").Value));
+            }
+            else
+            {
+                inventory.equipments[i++]
+                    = new Armor_ItemData(Convert.ToString(snapshot.Child("uuid").Value)
+                    , Convert.ToInt32(item.Child("id").Value)
+                    , Convert.ToString(item.Child("itemName").Value)
+                    , Convert.ToInt32(item.Child("part").Value)
+                    , Convert.ToInt32(item.Child("level").Value)
+                    , Convert.ToInt32(item.Child("defense").Value));
+            }
+        }
+        for (; i < inventory.cells.Length; i++)
+        {
+            inventory.equipments[i] = null;
+        }
+        if (inventory.curWindow == 0)
+            inventory.Update_Equipment_Inventory();
+        Player_Info.Instance.UpdateStats();
+    }
+
+    public async void ReadWearingEquipment()
+    {
+        EquipmentWindowController equipment_window = EquipmentWindowController.Instance;
+        Task<DataSnapshot> resultTask =
+            m_Reference.Child("users").Child(Player_Info.Instance.nickName).Child("인벤토리")
+            .Child("착용중").GetValueAsync();
+        await resultTask;
+        DataSnapshot snapshot = resultTask.Result;
+
+        for (int i = 0; i < equipment_window.cells.Length; i++)
+        {
+            equipment_window.equipments[i] = null;
+        }
+        foreach (var item in snapshot.Children)
+        {
+            int part = Convert.ToInt32(item.Child("part").Value);
+            if (part == 0)
+            {
+                equipment_window.equipments[part]
+                    = new Weapon_ItemData(Convert.ToString(snapshot.Child("uuid").Value)
+                    , Convert.ToInt32(item.Child("id").Value)
+                    , Convert.ToString(item.Child("itemName").Value)
+                    , Convert.ToInt32(item.Child("part").Value)
+                    , Convert.ToInt32(item.Child("level").Value)
+                    , Convert.ToInt32(item.Child("attack").Value));
+            }
+            else
+            {
+                equipment_window.equipments[part]
+                    = new Armor_ItemData(Convert.ToString(snapshot.Child("uuid").Value)
+                    , Convert.ToInt32(item.Child("id").Value)
+                    , Convert.ToString(item.Child("itemName").Value)
+                    , Convert.ToInt32(item.Child("part").Value)
+                    , Convert.ToInt32(item.Child("level").Value)
+                    , Convert.ToInt32(item.Child("defense").Value));
+            }
+        }
+        equipment_window.Update_Equipment_Window();
+
+    }
+
+    public void ReadAvailableQuests()
+    {
+        m_Reference.Child("users").Child(Player_Info.Instance.nickName).Child("퀘스트").Child("시작가능")
             .GetValueAsync().ContinueWithOnMainThread(task =>
             {
                 if (task.IsFaulted)
@@ -342,28 +577,61 @@ public class CFirebase : MonoBehaviour
                 }
                 else if (task.IsCompleted)
                 {
-                    Debug.Log("ReadItems");
+                    Debug.Log("Read Available Quests");
                     DataSnapshot snapshot = task.Result;
-                    int i = 0;
-                    foreach(var item in snapshot.Children)
+                    foreach(var quest in snapshot.Children)
                     {
-                        inventory.etcs[i++] = 
-                            new ETC_ItemData(Convert.ToString(item.Child("itemName").Value), Convert.ToInt32(item.Child("count").Value));
+                        QuestData QD = new QuestData(Convert.ToString(quest.Child("questName").Value)
+                            , Convert.ToString(quest.Child("dialogs").Value)
+                            , MyConvert_To_StringArray(quest.Child("monsters").Children)
+                            , MyConvert_To_IntArray(quest.Child("monster_counts").Children)
+                            , MyConvert_To_IntArray(quest.Child("completed_monster_counts").Children)
+                            , MyConvert_To_StringArray(quest.Child("materials").Children)
+                            , MyConvert_To_IntArray(quest.Child("material_counts").Children)
+                            , MyConvert_To_IntArray(quest.Child("completed_material_counts").Children)
+                            , MyConvert_To_StringArray(quest.Child("reward_materials").Children)
+                            , MyConvert_To_IntArray(quest.Child("reward_material_counts").Children));
+                        QuestController.Instance.availabeQuests.Add(QD);
                     }
-                    for(; i < inventory.cells.Length; i++)
-                    {
-                        inventory.etcs[i] = null;
-                    }
-                    if(InventoryController.Instance.curWindow == 2)
-                        InventoryController.Instance.Update_ETC_Inventory();
                 }
             });
     }
 
-    public void ReadEquipments()
+    public void ReadQuestInProgress()
     {
-        InventoryController inventory = InventoryController.Instance;
-        m_Reference.Child("users").Child(Player_Info.Instance.nickName).Child("인벤토리").Child("장비")
+        m_Reference.Child("users").Child(Player_Info.Instance.nickName).Child("퀘스트").Child("진행중")
+          .GetValueAsync().ContinueWithOnMainThread(task =>
+          {
+              if (task.IsFaulted)
+              {
+                  // Handle the error...
+              }
+              else if (task.IsCompleted)
+              {
+                  Debug.Log("Read Available Quests");
+                  DataSnapshot snapshot = task.Result;
+                  foreach (var quest in snapshot.Children)
+                  {
+                      QuestData QD = new QuestData(Convert.ToString(quest.Child("questName").Value)
+                        , Convert.ToString(quest.Child("dialogs").Value)
+                        , MyConvert_To_StringArray(quest.Child("monsters").Children)
+                        , MyConvert_To_IntArray(quest.Child("monster_counts").Children)
+                        , MyConvert_To_IntArray(quest.Child("completed_monster_counts").Children)
+                        , MyConvert_To_StringArray(quest.Child("materials").Children)
+                        , MyConvert_To_IntArray(quest.Child("material_counts").Children)
+                        , MyConvert_To_IntArray(quest.Child("completed_material_counts").Children)
+                        , MyConvert_To_StringArray(quest.Child("reward_materials").Children)
+                        , MyConvert_To_IntArray(quest.Child("reward_material_counts").Children));
+                      QuestController.Instance.inProgressQuests.Add(QD);
+                      QuestController.Instance._killNotiHandler += new KillNotiHandler(QD.OnNotify);
+                  }
+              }
+          });
+    }
+
+    public void ReadCompletedQuests()
+    {
+        m_Reference.Child("users").Child(Player_Info.Instance.nickName).Child("퀘스트").Child("완료")
             .GetValueAsync().ContinueWithOnMainThread(task =>
             {
                 if (task.IsFaulted)
@@ -372,38 +640,62 @@ public class CFirebase : MonoBehaviour
                 }
                 else if (task.IsCompleted)
                 {
-                    Debug.Log("ReadEquipment");
+                    Debug.Log("Read Available Quests");
                     DataSnapshot snapshot = task.Result;
-                    int i = 0;
-                    foreach (var item in snapshot.Children)
+                    foreach (var quest in snapshot.Children)
                     {
-                        if (Convert.ToChar(item.Child("part").Value) == '0')
-                        {
-                            inventory.equipments[i++]
-                                = new Weapon_ItemData(Convert.ToInt32(item.Child("id").Value)
-                                , Convert.ToString(item.Child("itemName").Value)
-                                , Convert.ToChar(item.Child("part").Value)
-                                , Convert.ToInt32(item.Child("level").Value)
-                                , Convert.ToInt32(item.Child("power").Value));
-                        }
-                        else
-                        {
-                            inventory.equipments[i++]
-                                = new Armor_ItemData(Convert.ToInt32(item.Child("id").Value)
-                                , Convert.ToString(item.Child("itemName").Value)
-                                , Convert.ToChar(item.Child("part").Value)
-                                , Convert.ToInt32(item.Child("level").Value)
-                                , Convert.ToInt32(item.Child("defense").Value));
-                        }
+                        QuestData QD = new QuestData(Convert.ToString(quest.Child("questName").Value)
+                            , Convert.ToString(quest.Child("dialogs").Value)
+                            , MyConvert_To_StringArray(quest.Child("monsters").Children)
+                            , MyConvert_To_IntArray(quest.Child("monster_counts").Children)
+                            , MyConvert_To_IntArray(quest.Child("completed_monster_counts").Children)
+                            , MyConvert_To_StringArray(quest.Child("materials").Children)
+                            , MyConvert_To_IntArray(quest.Child("material_counts").Children)
+                            , MyConvert_To_IntArray(quest.Child("completed_material_counts").Children)
+                            , MyConvert_To_StringArray(quest.Child("reward_materials").Children)
+                            , MyConvert_To_IntArray(quest.Child("reward_material_counts").Children));
+                        QuestController.Instance.completedQuests.Add(QD);
                     }
-                    for (; i < inventory.cells.Length; i++)
-                    {
-                        inventory.equipments[i] = null;
-                    }
-                    if (InventoryController.Instance.curWindow == 0)
-                        InventoryController.Instance.Update_Equipment_Inventory();
                 }
             });
+    }
+
+    public async Task<bool> CheckMaterials(TuningRecipe recipe)
+    {
+        for (int i = 0; i < recipe.material_count.Length; i++)
+        {
+            Task<DataSnapshot> resultTask =
+                m_Reference.Child("users").Child(Player_Info.Instance.nickName).Child("인벤토리").Child("기타")
+                .Child(recipe.material_name[i]).GetValueAsync();
+            await resultTask;
+            if (recipe.material_count[i] > Convert.ToInt32(resultTask.Result.Child("count").Value))
+                return false;
+        }
+        return true;
+    }
+
+    public void ConsumeMaterials(TuningRecipe recipe)
+    {
+        for (int i = 0; i < recipe.material_count.Length; i++)
+        {
+            var etc_item = InventoryController.Instance.Find_Item(recipe.material_name[i]);
+            int cnt = etc_item.count - recipe.material_count[i];
+            if (cnt == 0)
+            {
+                m_Reference.Child("users").Child(Player_Info.Instance.nickName).Child("인벤토리")
+                    .Child("기타").Child(recipe.material_name[i]).SetValueAsync(null);
+
+                InventoryController.Instance.etcs[InventoryController.Instance.Find_Item_Index(recipe.material_name[i])] = null;
+            }
+            else
+            {
+                m_Reference.Child("users").Child(Player_Info.Instance.nickName).Child("인벤토리")
+                    .Child("기타").Child(recipe.material_name[i]).Child("count").SetValueAsync(cnt);
+                etc_item.count = cnt;
+                Debug.Log("cnt 업데이트");
+            }
+            
+        }
     }
 
     public void CheckNickName(string _nickName, AuthManager authManager)
@@ -443,5 +735,27 @@ public class CFirebase : MonoBehaviour
         });
 
         
+    }
+
+    private string[] MyConvert_To_StringArray(IEnumerable<DataSnapshot> mobj)
+    {
+        string[] returnData = new string[mobj.Count()];
+        int i = 0;
+        foreach (var item in mobj)
+        {
+            returnData[i++] = Convert.ToString(item.Value);
+        }
+        return returnData;
+    }
+
+    private int[] MyConvert_To_IntArray(IEnumerable<DataSnapshot> mobj)
+    {
+        int[] returnData = new int[mobj.Count()];
+        int i = 0;
+        foreach (var item in mobj)
+        {
+            returnData[i++] = Convert.ToInt32(item.Value);
+        }
+        return returnData;
     }
 }

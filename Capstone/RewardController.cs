@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class RewardController : MonoBehaviour
 {
+    // 이거는 싱글톤 제외하자!!
+
     private static RewardController instance;
     public static RewardController Instance
     {

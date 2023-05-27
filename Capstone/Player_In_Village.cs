@@ -12,6 +12,7 @@ public class Player_In_Village : MonoBehaviour
     private void Awake()
     {
         InventoryController.Instance.Read_Inventory();
+        CFirebase.Instance.ReadWearingEquipment();
     }
 
     private void Update()
@@ -30,13 +31,18 @@ public class Player_In_Village : MonoBehaviour
             if (!EquipmentWindowController.Instance.canvas.enabled)
             {
                 EquipmentWindowController.Instance.canvas.sortingOrder = ETC_Memory.Instance.top_orderLayer++;
+                CFirebase.Instance.ReadWearingEquipment();
             }
             EquipmentWindowController.Instance.canvas.enabled = !EquipmentWindowController.Instance.canvas.enabled;
         }
         if (Input.GetKeyDown(KeyCode.P))
         {
-            party_UI.GetComponent<Canvas>().sortingOrder = ETC_Memory.Instance.top_orderLayer++;
-            party_UI.SetActive(!party_UI.activeSelf);
+            if (!StatsWindowController.Instance.canvas.enabled)
+            {
+                StatsWindowController.Instance.canvas.sortingOrder = ETC_Memory.Instance.top_orderLayer++;
+                Player_Info.Instance.UpdateStats();
+            }
+            StatsWindowController.Instance.canvas.enabled = !StatsWindowController.Instance.canvas.enabled;
         }
     }
 

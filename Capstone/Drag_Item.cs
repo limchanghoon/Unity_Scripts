@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -29,6 +28,8 @@ public class Drag_Item : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoin
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        if (itemData_MonoBehaviour.itemData.type == '-')
+            return;
         top_parent.GetComponent<Canvas>().sortingOrder = ETC_Memory.Instance.top_orderLayer++;
         transform.SetParent(top_parent);
         downPosition = eventData.position;
@@ -36,6 +37,8 @@ public class Drag_Item : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoin
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (itemData_MonoBehaviour.itemData.type == '-')
+            return;
         Vector2 offset = eventData.position - downPosition;
         downPosition = eventData.position;
 
@@ -45,6 +48,8 @@ public class Drag_Item : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoin
 
     public void OnPointerUp(PointerEventData eventData)
     {
+        if (itemData_MonoBehaviour.itemData.type == '-')
+            return;
         transform.SetParent(original_parent);
         window.anchoredPosition = fix_position;
 

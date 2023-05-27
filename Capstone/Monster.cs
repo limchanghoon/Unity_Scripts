@@ -26,9 +26,9 @@ public class Monster : MonoBehaviour, IHit
     List<GameObject> pop_objs = new List<GameObject>();
 
     // º¯¼ö
+    public string monsterName;
     [SerializeField] protected float maxHp;
     [SerializeField] protected float curHp;
-    [SerializeField] float damageTextUpLength;
     public Camera theCam;
     protected Animator animator;
 
@@ -90,6 +90,7 @@ public class Monster : MonoBehaviour, IHit
 
     protected virtual void Die()
     {
+        QuestController.Instance.Notify_Kill(monsterName);
         isDied = true;
         hpBarObj.SetActive(false);
         foreach(Collider col in colliders)

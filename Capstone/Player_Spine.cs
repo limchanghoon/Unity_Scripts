@@ -14,6 +14,11 @@ public class Player_Spine : MonoBehaviour
 
     public float rox = 0;
 
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.Confined;
+    }
+
     private void LateUpdate()
     {
         if (!pv || pv.IsMine)
@@ -36,7 +41,6 @@ public class Player_Spine : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Escape))
         {
             Cursor.visible = !Cursor.visible;
-            Cursor.lockState = CursorLockMode.Confined;
         }
     }
 

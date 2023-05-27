@@ -10,9 +10,13 @@ using UnityEngine.UI;
 public class InventoryController : MonoBehaviour
 {
     public Image[] cells;
+    TextMeshProUGUI[] miniText;
     public Equipment_ItemData[] equipments;
     public ETC_ItemData[] etcs;
     public Canvas canvas;
+    public Sprite back;
+    public Scrollbar scrollbar;
+    public static string[] part_names = { "Gun", "Pendant", "Gloves", "Helmet", "Breastplate", "Boots" };
 
     public int curWindow = 0;   /* 0: 장비, 1: 소비?, 2: 기타, 3: 퀘스트 */
 
@@ -21,14 +25,9 @@ public class InventoryController : MonoBehaviour
     {
         get
         {
-            var obj = FindObjectOfType<InventoryController>();
-            if (obj != null)
+            if (null == instance)
             {
-                instance = obj;
-            }
-            else
-            {
-                instance = Create();
+                return Create();
             }
             return instance;
         }
@@ -41,14 +40,22 @@ public class InventoryController : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != this)
+        if (instance == null)
+        {
+            instance = this;
+            equipments = new Equipment_ItemData[cells.Length];
+            etcs = new ETC_ItemData[cells.Length];
+            miniText = new TextMeshProUGUI[cells.Length];
+            for (int i = 0; i < cells.Length; i++)
+            {
+                miniText[i] = cells[i].GetComponentInChildren<TextMeshProUGUI>();
+            }
+            DontDestroyOnLoad(gameObject);
+        }
+        else
         {
             Destroy(gameObject);
-            return;
         }
-        DontDestroyOnLoad(gameObject);
-        equipments = new Equipment_ItemData[cells.Length];
-        etcs = new ETC_ItemData[cells.Length];
     }
 
     public void Read_Inventory()
@@ -64,7 +71,7 @@ public class InventoryController : MonoBehaviour
             
             if (etc == null)
             {
-                break;
+                continue;
             }
             if (etc.itemName == _itemName)
             {
@@ -74,29 +81,50 @@ public class InventoryController : MonoBehaviour
         return null;
     }
 
+    public int Find_Item_Index(string _itemName)
+    {
+        for(int i = 0; i < etcs.Length; i++)
+        {
+            if (etcs[i] == null)
+            {
+                continue;
+            }
+            if (etcs[i].itemName == _itemName)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public void Update_Equipment_Inventory()
     {
         curWindow = 0;
         for (int i = 0; i < cells.Length; i++)
         {
             if (equipments[i] == null)
-                cells[i].gameObject.SetActive(false);
+            {
+                cells[i].sprite = back;
+                cells[i].GetComponent<ItemData_MonoBehaviour>().itemData = new ItemData();
+                miniText[i].text = String.Empty;
+            }
             else
             {
-                cells[i].gameObject.SetActive(true);
-                cells[i].sprite = Resources.Load("Images/Items/" + equipments[i].itemName, typeof(Sprite)) as Sprite;
-                cells[i].transform.GetComponentInChildren<TextMeshProUGUI>().text = "+ " + equipments[i].level.ToString();
+                string path = "Images/Items/" + part_names[equipments[i].part] + "/" + equipments[i].itemName;
 
-                if(equipments[i].part == '0')
+                cells[i].sprite = Resources.Load(path, typeof(Sprite)) as Sprite;
+                miniText[i].text = "+ " + equipments[i].level.ToString();
+
+                if(equipments[i].part == 0)
                 {
-                    Weapon_ItemData itemData = new Weapon_ItemData(equipments[i].id, equipments[i].itemName
-                        , equipments[i].part, equipments[i].level, ((Weapon_ItemData)equipments[i]).power);
+                    Weapon_ItemData itemData = new Weapon_ItemData(equipments[i].uuid, equipments[i].id, equipments[i].itemName
+                        , equipments[i].part, equipments[i].level, ((Weapon_ItemData)equipments[i]).attack);
 
                     cells[i].GetComponent<ItemData_MonoBehaviour>().itemData = itemData;
                 }
                 else
                 {
-                    Armor_ItemData itemData = new Armor_ItemData(equipments[i].id, equipments[i].itemName
+                    Armor_ItemData itemData = new Armor_ItemData(equipments[i].uuid, equipments[i].id, equipments[i].itemName
                         , equipments[i].part, equipments[i].level, ((Armor_ItemData)equipments[i]).defense);
 
                     cells[i].GetComponent<ItemData_MonoBehaviour>().itemData = itemData;
@@ -111,12 +139,15 @@ public class InventoryController : MonoBehaviour
         for (int i =0; i < cells.Length; i++)
         {
             if (etcs[i] == null)
-                cells[i].gameObject.SetActive(false);
+            {
+                cells[i].sprite = back;
+                cells[i].GetComponent<ItemData_MonoBehaviour>().itemData = new ItemData();
+                miniText[i].text = String.Empty;
+            }
             else
             {
-                cells[i].gameObject.SetActive(true);
                 cells[i].sprite = Resources.Load("Images/Items/" + etcs[i].itemName, typeof(Sprite)) as Sprite;
-                cells[i].transform.GetComponentInChildren<TextMeshProUGUI>().text = "x " + etcs[i].count.ToString();
+                miniText[i].text = "x " + etcs[i].count.ToString();
 
                 ETC_ItemData itemData = new ETC_ItemData(etcs[i].itemName, etcs[i].count);
 

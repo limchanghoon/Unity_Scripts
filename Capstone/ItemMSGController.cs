@@ -10,14 +10,9 @@ public class ItemMSGController : MonoBehaviour
     {
         get
         {
-            var obj = FindObjectOfType<ItemMSGController>();
-            if (obj != null)
+            if (null == instance)
             {
-                instance = obj;
-            }
-            else
-            {
-                instance = Create();
+                return Create();
             }
             return instance;
         }
@@ -30,19 +25,29 @@ public class ItemMSGController : MonoBehaviour
 
     private void Awake()
     {
-        txtCount = parentTr.childCount;
-        if (Instance != this)
+        if (instance == null)
+        {
+            instance = this;
+            txtCount = parentTr.childCount;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
         {
             Destroy(gameObject);
-            return;
         }
-        DontDestroyOnLoad(gameObject);
     }
+
     public Transform parentTr;
     private int txtCount;
 
     public void UpMSG(string str)
     {
+        UnityMainThreadDispatcher.Instance().Enqueue(UpMSGoroutine(str));
+    }
+
+    IEnumerator UpMSGoroutine(string str)
+    {
         parentTr.GetChild(txtCount - 1).GetComponent<ItemMSG>().SetMSG(str);
+        yield return null;
     }
 }

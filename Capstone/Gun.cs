@@ -233,8 +233,8 @@ public class Gun : MonoBehaviour
             //Debug.Log("Ray Hit " + hitInfo.transform.name);
             if(hitInfo.transform.tag == "Monster")
             {
-                int minDamage = damage - 10 >= 0 ? damage : 0;
-                int maxDamage = damage + 11;
+                int minDamage = (int)(Player_Info.Instance.attack * 0.9f);
+                int maxDamage = (int)(Player_Info.Instance.attack * 1.1f);
                 hitInfo.transform.GetComponent<IHit>().Hit(Random.Range(minDamage, maxDamage), hitInfo.point);
             }
             if (pv)
