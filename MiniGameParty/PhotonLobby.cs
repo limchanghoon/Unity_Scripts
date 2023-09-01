@@ -5,6 +5,7 @@ using Photon.Realtime;  // 포톤 서비스 관련 라이브러리
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.IO;
 
 public class PhotonLobby : MonoBehaviourPunCallbacks
 {
@@ -20,13 +21,16 @@ public class PhotonLobby : MonoBehaviourPunCallbacks
         }
     }
     private string gameVersion = "1"; // 게임 버전
+    [SerializeField] AudioClip[] audioClips;
+    AudioSource audioSource;
 
     PhotonView myPhotonView;
-    public TextMeshProUGUI connectionInfoText;     // 네트워크 정보를 표시할 텍스트
+    public TextMeshProUGUI connectionInfoText;          // 네트워크 정보를 표시할 텍스트
+    public TextMeshProUGUI concurrentUsersCountText;    // 동시 접속자 수를 표시할 텍스트
 
     [Header("LobbyPanel")]
     public GameObject LobbyPanel;
-    public TextMeshProUGUI nickNameField;
+    public TMP_InputField nickNameField;
     public Button showCreateRoomPanelBtn;
     public Button previousBtn;
     public Button nextBtn;
@@ -42,19 +46,24 @@ public class PhotonLobby : MonoBehaviourPunCallbacks
     Dictionary<string, string> overviewDic = new Dictionary<string, string> {
         {"테트리스","테트리스 1 대 1 대결로 겨루자!\n5줄을 없앨 때마다 상대하게 공격을 할 수 있다!\n상대를 먼저 GameOver시키면 승리!"},
         {"포트리스","포트리스 최대 4명까지 즐기자!\n상대의 체력을 다 깍거나 땅속으로 떨어뜨려 마지막까지 살아남아라!"},
-        {"게임3","게임 3\n 333333!"} };
+        {"원카드","원카드\n파산 기준 총인원 2명 : 20장\n파산 기준 총인원 3명 : 17장\n파산 기준 총인원 4명 : 12장"},
+        {"탁구","탁구 테스트입니다!"}};
     Dictionary<string, string> simpleImageDic = new Dictionary<string, string> {
         {"테트리스","Images/Tetris/TetrisSimple"},
         {"포트리스","Images/Fortress/FortressSimple"},
-        {"게임3","Images/G3Simple"} };
+        {"원카드","Images/OneCard/OneCardSimple"},
+        {"탁구","Images/PingPong/PingPongSimple"} };
     Dictionary<string, _Pair> capacityDic = new Dictionary<string, _Pair> {
         {"테트리스", new _Pair(2,2)},
         {"포트리스", new _Pair(2,4)},
-        {"게임3", new _Pair(2,4)} };
+        {"원카드", new _Pair(2,4)},
+        {"탁구", new _Pair(2,2)} };
+
     [Header("RoomPanel")]
     public GameObject roomPanel;
     public TextMeshProUGUI roomInfoText;
     public TextMeshProUGUI[] nickNameTexts;
+    public GameObject startBtn;
 
     List<RoomInfo> myList = new List<RoomInfo>();
     int currentPage = 1, maxPage, multiple;
@@ -62,7 +71,9 @@ public class PhotonLobby : MonoBehaviourPunCallbacks
     // 게임 실행과 동시에 마스터 서버 접속 시도
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         myPhotonView = GetComponent<PhotonView>();
+        LoadNickNameFromJson();
         if (PhotonNetwork.InRoom)
         {
             OnJoinedRoom();
@@ -73,7 +84,6 @@ public class PhotonLobby : MonoBehaviourPunCallbacks
             OnConnectedToMaster();
             return;
         }
-
         // 접속에 필요한 정보(게임 버전) 설정
         PhotonNetwork.GameVersion = gameVersion;
         // 설정한 정보를 가지고 마스터 서버 접속 시도
@@ -82,6 +92,7 @@ public class PhotonLobby : MonoBehaviourPunCallbacks
 
         // 접속을 시도 중임을 텍스트로 표시
         connectionInfoText.text = "마스터 서버에 접속중...";
+        StartCoroutine(UpdateConcurrentUsersCount());
 
     }
 
@@ -90,6 +101,7 @@ public class PhotonLobby : MonoBehaviourPunCallbacks
     // ◀버튼 -2 , ▶버튼 -1 , 셀 숫자
     public void MyListClick(int num)
     {
+        PlayClip();
         if (num == -2) --currentPage;
         else if (num == -1) ++currentPage;
         else
@@ -149,7 +161,7 @@ public class PhotonLobby : MonoBehaviourPunCallbacks
         // 접속 로그 표시
         Debug.Log("마스터 서버에 연결됨");
 
-        Debug.Log("동시 접속자 : " + PhotonNetwork.CountOfPlayers);
+        concurrentUsersCountText.text = "동시 접속자 : " + PhotonNetwork.CountOfPlayers.ToString() + "/20";
         PhotonNetwork.JoinLobby();
         myList.Clear();
         MyListRenewal();
@@ -195,14 +207,13 @@ public class PhotonLobby : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             // 반장이 바뀌면 준비에서 시작으로 변경! 해당 상태도 준비상태에서 해제해야함!!!
+            startBtn.SetActive(true);
             connectionInfoText.text = "방 참가 성공(방장) : " + PhotonNetwork.LocalPlayer.NickName;
-
-            //startButtonObj.SetActive(true);
         }
         else
         {
+            startBtn.SetActive(false);
             connectionInfoText.text = "방 참가 성공(참가자) : " + PhotonNetwork.LocalPlayer.NickName;
-
         }
         Debug.Log("방장 바뀜");
         //myPhotonView.RPC("updateUI", RpcTarget.All);
@@ -234,20 +245,28 @@ public class PhotonLobby : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Debug.Log("방 참가 성공");
+        SaveNickNameToJson();
         roomPanel.SetActive(true);
 
         UpdateRoomInfo();
 
         if (PhotonNetwork.IsMasterClient)
+        {
+            startBtn.SetActive(true);
             connectionInfoText.text = "방 참가 성공(방장) : " + PhotonNetwork.LocalPlayer.NickName;
+        }
         else
+        {
+            startBtn.SetActive(false);
             connectionInfoText.text = "방 참가 성공(참가자) : " + PhotonNetwork.LocalPlayer.NickName;
+        }
     }
     #endregion
 
     #region 3. 방만들기 메뉴
     public void ShowCreateRoomPanel()
     {
+        PlayClip();
         PhotonNetwork.LocalPlayer.NickName = nickNameField.text;
         roomNameInputField.text = string.Empty;
         overviewText.text = currentGame;
@@ -258,12 +277,14 @@ public class PhotonLobby : MonoBehaviourPunCallbacks
 
     public void QuitCreateRoomPanel()
     {
+        PlayClip();
         createRoomPanel.SetActive(false);
         LobbyPanel.SetActive(true);
     }
 
     public void SelectGame(string gameName)
     {
+        PlayClip();
         currentGame = gameName;
         Debug.Log(currentGame + " 선택했습니다.");
         overviewText.text = overviewDic[currentGame];
@@ -275,12 +296,13 @@ public class PhotonLobby : MonoBehaviourPunCallbacks
             newData.text = "인원 "+i.ToString()+"명";
             dropdown.options.Add(newData);
         }
+        dropdown.value = -1;
         dropdown.value = 0;
     }
 
     public void CreateRoom()
     {
-        // 중복 접속 시도를 막기 위해, 접속 버튼 잠시 비활성화
+        PlayClip();
 
         // 마스터 서버에 접속중이라면
         if (PhotonNetwork.IsConnected)
@@ -311,8 +333,10 @@ public class PhotonLobby : MonoBehaviourPunCallbacks
     }
     #endregion
 
+    #region 4. 방에서 실행하는 함수
     public void LeaveRoom()
     {
+        PlayClip();
         //myPhotonView.RPC("updateUIForLeave", RpcTarget.All,PhotonNetwork.LocalPlayer.NickName);
         roomPanel.SetActive(false);
         PhotonNetwork.LeaveRoom();
@@ -320,6 +344,7 @@ public class PhotonLobby : MonoBehaviourPunCallbacks
 
     public void StartGame()
     {
+        PlayClip();
         PhotonNetwork.CurrentRoom.IsOpen = false;
         PhotonNetwork.CurrentRoom.IsVisible = false;
         myPhotonView.RPC("allPlayerStart", RpcTarget.All);
@@ -361,9 +386,60 @@ public class PhotonLobby : MonoBehaviourPunCallbacks
         }
         return true;
     }
+    #endregion
+
+    #region 5. 세팅 저장 & 로드
+    [System.Serializable]
+    public class NickNameForJson
+    {
+        public string nickName;
+    }
+
+    public void SaveNickNameToJson()
+    {
+        NickNameForJson _nickNameForJson = new NickNameForJson { nickName = nickNameField.text };
+        string jsonData = JsonUtility.ToJson(_nickNameForJson, true);
+        string path = Path.Combine(Application.persistentDataPath, "nickName.json");
+        File.WriteAllText(path, jsonData);
+        Debug.Log("SaveNickNameToJson [" + _nickNameForJson.nickName + "]");
+    }
+
+    public void LoadNickNameFromJson()
+    {
+        string path = Path.Combine(Application.persistentDataPath, "nickName.json");
+        string jsonData;
+        NickNameForJson _nickNameForJson;
+        string _nickName;
+        if (File.Exists(path))
+        {
+            jsonData = File.ReadAllText(path);
+            _nickNameForJson = JsonUtility.FromJson<NickNameForJson>(jsonData);
+            _nickName = _nickNameForJson.nickName;
+        }
+        else
+            _nickName = "";
+        nickNameField.text = _nickName;
+        Debug.Log("LoadNickNameFromJson [" + _nickName + "]");
+    }
+    #endregion
+    IEnumerator UpdateConcurrentUsersCount()
+    {
+        while (true)
+        {
+            concurrentUsersCountText.text = "동시 접속자 : " + PhotonNetwork.CountOfPlayers.ToString() + "/20";
+            yield return new WaitForSeconds(5f);
+        }
+    }
+
+    void PlayClip()
+    {
+        audioSource.clip = audioClips[0];
+        audioSource.Play();
+    }
 
     public void QuitGame()
     {
+        PlayClip();
         #if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
         #elif UNITY_WEBPLAYER

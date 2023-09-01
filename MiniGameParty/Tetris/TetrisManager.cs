@@ -6,8 +6,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 using TMPro;
+using Photon.Realtime;
 
-public class TetrisManager : MonoBehaviour
+public class TetrisManager : MonoBehaviourPunCallbacks
 {
     [Serializable]
     public class _2dArray_Int
@@ -61,7 +62,10 @@ public class TetrisManager : MonoBehaviour
     const int FREE_SPACE_SIZE_Y = 4;            // 위에 여분 공간
     const int SIZE_X = 10;                      // 가로 사이즈
     const int SIZE_Y = 20 + FREE_SPACE_SIZE_Y;  // 세로 사이즈 + 세로 여분 공간
-    const int NEED_TO_GARBAGE = 5;              // 쓰레기줄 생성을 위해 필요한 줄
+    const int NEED_TO_GARBAGE = 3;              // 쓰레기줄 생성을 위해 필요한 줄
+
+    [SerializeField] AudioSource audioSource;
+    [SerializeField] AudioClip[] audioClips;
 
     public int playerCount = 0;
     PhotonView pv;
@@ -156,6 +160,7 @@ public class TetrisManager : MonoBehaviour
     public GameObject winText;
     public GameObject loseText;
     public GameObject drawText;
+    public GameObject winByLeftText;
 
     private void Awake()
     {
@@ -437,8 +442,10 @@ public class TetrisManager : MonoBehaviour
                 if (blockChecks[i].arr[j] != 1)
                     break;
             }
+            bool b_clear = false;
             if(j == SIZE_X)
             {
+                b_clear = true;
                 // i번째 줄 삭제!
                 deletedLineCountText.text = "삭제한 라인수 : " + (++deletedLineCount).ToString();
                 if (deletedLineCount % NEED_TO_GARBAGE == 0)
@@ -446,6 +453,8 @@ public class TetrisManager : MonoBehaviour
                 LineToBlank(i);
                 pv.RPC("DeleteLineRPC", RpcTarget.Others, i);
             }
+            if (b_clear)
+                PlayClip(1);
         }
     }
 
@@ -486,6 +495,7 @@ public class TetrisManager : MonoBehaviour
 
             if (!CheckBlock(nextPosX, nextPosY))
             {
+                PlayClip(0);
                 BlockToFix();
                 DeleteLine();
                 if (CheckDeath())
@@ -738,9 +748,58 @@ public class TetrisManager : MonoBehaviour
         UnityEngine.SceneManagement.SceneManager.LoadScene("Lobby");
     }
 
-    /*
-     * 네트워크 관련 함수
-     */
+    void PlayClip(int i)
+    {
+        audioSource.clip = audioClips[i];
+        audioSource.Play();
+    }
+
+    private void ShowResult(bool needToCheckTimer)
+    {
+        resultPanel.SetActive(true);
+        if (needToCheckTimer)
+        {
+            Debug.Log("needToCheckTimer : TURE");
+            resultTotalTimerText.text = "<color=white>나의 생존시간 : " + totalTime.ToString() + "</color>\n<color=black>상대 생존시간 : " + opponentTotalTime.ToString() + " </color>";
+            if (totalTime > opponentTotalTime)
+            {
+                winText.SetActive(true);
+            }
+            else if (totalTime < opponentTotalTime)
+            {
+                loseText.SetActive(true);
+            }
+            else
+            {
+                drawText.SetActive(true);
+            }
+        }
+        else
+        {
+            Debug.Log("needToCheckTimer : FALSE");
+            if (b_win)
+                winText.SetActive(true);
+            else
+                loseText.SetActive(true);
+        }
+    }
+
+    private void ShowResultForSolo()
+    {
+        resultPanel.SetActive(true);
+        resultTotalTimerText.text = "<color=white>나의 생존시간 : " + totalTime.ToString();
+    }
+
+    #region 네트워크 관련 함수
+    // 다른 플레이어가 나감
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        if (b_end)
+            return;
+        b_end = true;
+        ShowResultForSolo();
+        winByLeftText.SetActive(true);
+    }
 
     [PunRPC]
     public void StartAllPlayerRPC()
@@ -850,6 +909,10 @@ public class TetrisManager : MonoBehaviour
         Debug.Log("Die");
         b_end = true;
         b_win = false;
+        if(PhotonNetwork.CurrentRoom.PlayerCount == 1)
+        {
+            ShowResultForSolo();
+        }
         pv.RPC("SendTotalTime1", RpcTarget.Others, totalTime);
     }
 
@@ -877,36 +940,6 @@ public class TetrisManager : MonoBehaviour
         b_end = true;
         ShowResult(needToCheckTimer);
     }
-
-    private void ShowResult(bool needToCheckTimer)
-    {
-        resultPanel.SetActive(true);
-        if (needToCheckTimer)
-        {
-            Debug.Log("needToCheckTimer : TURE");
-            resultTotalTimerText.text = "<color=white>나의 생존시간 : " + totalTime.ToString() + "</color>\n<color=black>상대 생존시간 : " + opponentTotalTime.ToString() + " </color>";
-            if (totalTime > opponentTotalTime)
-            {
-                winText.SetActive(true);
-            }
-            else if (totalTime < opponentTotalTime)
-            {
-                loseText.SetActive(true);
-            }
-            else
-            {
-                drawText.SetActive(true);
-            }
-        }
-        else
-        {
-            Debug.Log("needToCheckTimer : FALSE");
-            if (b_win)
-                winText.SetActive(true);
-            else
-                loseText.SetActive(true);
-        }
-    }
-
+    #endregion
 
 }
