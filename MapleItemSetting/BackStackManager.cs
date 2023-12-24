@@ -62,14 +62,16 @@ public class BackStackManager : MonoBehaviour
         }
     }
 
-    public void Push(GameObject _go)
+    public void PushAndSetTrue(GameObject _go)
     {
+        _go.SetActive(true);
         stack.Push(_go);
     }
 
-    public GameObject Pop()
+    public void PopAndSetFalse()
     {
-        return stack.Pop();
+        GameObject _go = stack.Pop();
+        _go.SetActive(false);
     }
 
 }

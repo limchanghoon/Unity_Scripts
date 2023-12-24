@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+[System.Serializable]
+public class Potential_2Array
+{
+    public Potential[] potentials;
+}
+
 public class SetOptionObject : MonoBehaviour
 {
     public string setName;
@@ -21,10 +27,12 @@ public class SetOptionObject : MonoBehaviour
     public TextMeshProUGUI[] optionTexts;
     public int[] setCounts;
 
+    public Potential_2Array[] potentials_2Array;
+
     public int GetCountExcludingLuckyItem()
     {
         int count = 0;
-        for(int i = 0;i < checkArray.Length; i++)
+        for (int i = 0; i < checkArray.Length; i++)
         {
             if (checkArray[i] == true)
                 count++;
@@ -34,9 +42,9 @@ public class SetOptionObject : MonoBehaviour
 
     public void SetItem(Item _item)
     {
-        for(int i =0; i < itemNames.Length; i++)
+        for (int i = 0; i < itemNames.Length; i++)
         {
-            if(itemNames[i] == _item.name || (choose1Array[i] && itemTypes[i] == _item.type))
+            if (itemNames[i] == _item.name || (choose1Array[i] && itemTypes[i] == _item.type))
             {
                 checkArray[i] = true;
                 break;
@@ -66,7 +74,7 @@ public class SetOptionObject : MonoBehaviour
                 itemTypeText.text += "<color=#FFFFFF>(" + itemTypes[i].ToFriendlyString() + ")</color>\n";
                 count++;
             }
-            else if(luckyIndex == i)
+            else if (luckyIndex == i)
             {
                 itemNameText.text += "<color=#FFB200>" + luckyItemName + "</color>\n";
                 itemTypeText.text += "<color=#FFB200>(" + itemTypes[i].ToFriendlyString() + ")</color>\n";
@@ -80,12 +88,23 @@ public class SetOptionObject : MonoBehaviour
         }
         itemNameText.text += "----------------------------------------";
 
-        for(int i = 0; i < optionTexts.Length; i++)
+        for (int i = 0; i < optionTexts.Length; i++)
         {
             if (setCounts[i] <= count)
                 optionTexts[i].color = Color.white;
             else
                 break;
         }
+    }
+
+    public int GetCount()
+    {
+        int count = 0;
+        for (int i = 0; i < itemNames.Length; i++)
+        {
+            if (checkArray[i] || luckyIndex == i)
+                count++;
+        }
+        return count;
     }
 }

@@ -23,7 +23,7 @@ public class ExceptionalManager : MonoBehaviour
     public void UIReset()
     {
         var curItem = itemInfo.GetCurItem();
-
+        int cnt = curItem.exceptionalOption.Count;
 
         if (curItem.name == "몽환의 벨트")
         {
@@ -34,10 +34,10 @@ public class ExceptionalManager : MonoBehaviour
             itemSettingLogic.ResizeImage(exceptionalPartsImage.transform.GetComponent<RectTransform>(), exceptionalPartsImage.sprite, 200);
             exceptionalPartsText.text = "악몽의 조각";
 
-            if (curItem.exceptionalOption != "")
+            if (cnt != 0)
                 explanation2.text = "이미 익셉셔널 강화를 완료했습니다.";
             else
-                explanation2.text = "STR +20\nDEX +20\nINT +20\nLUK +20\n공격력 +15\n마력 +15\n최대 HP +1000\n최대 MP +1000";
+                explanation2.text = "STR : +20\nDEX : +20\nINT : +20\nLUK : +20\n공격력 : +15\n마력 : +15\n최대 HP : +1000\n최대 MP : +1000";
         }
         else if (curItem.name == "루즈 컨트롤 머신 마크")
         {
@@ -48,10 +48,10 @@ public class ExceptionalManager : MonoBehaviour
             itemSettingLogic.ResizeImage(exceptionalPartsImage.transform.GetComponent<RectTransform>(), exceptionalPartsImage.sprite, 200);
             exceptionalPartsText.text = "그라비티 모듈";
 
-            if (curItem.exceptionalOption != "")
+            if (cnt != 0)
                 explanation2.text = "이미 익셉셔널 강화를 완료했습니다.";
             else
-                explanation2.text = "STR +15\nDEX +15\nINT +15\nLUK +15\n공격력 +10\n마력 +10\n최대 HP +750\n최대 MP +750";
+                explanation2.text = "STR : +15\nDEX : +15\nINT : +15\nLUK : +15\n공격력 : +10\n마력 : +10\n최대 HP : +750\n최대 MP : +750";
         }
         else if (curItem.name == "마력이 깃든 안대")
         {
@@ -62,10 +62,10 @@ public class ExceptionalManager : MonoBehaviour
             itemSettingLogic.ResizeImage(exceptionalPartsImage.transform.GetComponent<RectTransform>(), exceptionalPartsImage.sprite, 200);
             exceptionalPartsText.text = "파멸의 징표";
 
-            if (curItem.exceptionalOption != "")
+            if (cnt != 0)
                 explanation2.text = "이미 익셉셔널 강화를 완료했습니다.";
             else
-                explanation2.text = "STR +15\nDEX +15\nINT +15\nLUK +15\n공격력 +10\n마력 +10\n최대 HP +750\n최대 MP +750";
+                explanation2.text = "STR : +15\nDEX : +15\nINT : +15\nLUK : +15\n공격력 : +10\n마력 : +10\n최대 HP : +750\n최대 MP : +750";
         }
         else if (curItem.name == "커맨더 포스 이어링")
         {
@@ -76,10 +76,10 @@ public class ExceptionalManager : MonoBehaviour
             itemSettingLogic.ResizeImage(exceptionalPartsImage.transform.GetComponent<RectTransform>(), exceptionalPartsImage.sprite, 200);
             exceptionalPartsText.text = "충정의 투구";
 
-            if (curItem.exceptionalOption != "")
+            if (cnt != 0)
                 explanation2.text = "이미 익셉셔널 강화를 완료했습니다.";
             else
-                explanation2.text = "STR +20\nDEX +20\nINT +20\nLUK +20\n공격력 +15\n마력 +15\n최대 HP +1000\n최대 MP +1000";
+                explanation2.text = "STR : +20\nDEX : +20\nINT : +20\nLUK : +20\n공격력 : +15\n마력 : +15\n최대 HP : +1000\n최대 MP : +1000";
         }
         else
         {
@@ -92,12 +92,15 @@ public class ExceptionalManager : MonoBehaviour
     public void ApplyExceptional()
     {
         var curItem = itemInfo.GetCurItem();
-        if (curItem.exceptionalOption != "")
+        if (curItem.exceptionalOption.Count != 0)
             return;
 
         if (curItem.name == "몽환의 벨트" || curItem.name == "루즈 컨트롤 머신 마크" || curItem.name == "마력이 깃든 안대" || curItem.name == "커맨더 포스 이어링")
         {
-            curItem.exceptionalOption = explanation2.text;
+            string[] optionsStrs = explanation2.text.Split('\n');
+            foreach (var str in optionsStrs)
+                curItem.exceptionalOption.Add(new Potential(str));
+
 
             fileManager.SaveIs(itemSettingLogic.GetItemSettingData(), itemSettingLogic.GetCurPath());
 
@@ -112,11 +115,11 @@ public class ExceptionalManager : MonoBehaviour
     public void ResetExceptional()
     {
         var curItem = itemInfo.GetCurItem();
-        if (curItem.exceptionalOption == "")
+        if (curItem.exceptionalOption.Count == 0)
             return;
         else
         {
-            curItem.exceptionalOption = "";
+            curItem.exceptionalOption.Clear();
 
             fileManager.SaveIs(itemSettingLogic.GetItemSettingData(), itemSettingLogic.GetCurPath());
 

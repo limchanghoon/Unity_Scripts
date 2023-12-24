@@ -24,6 +24,7 @@ public class StarForceManager : MonoBehaviour
     public TMP_Dropdown dropdown;
 
     int count = 0;
+    // ³îÀå ½ºÅÝ
     int[] AZ150S = { 19, 20, 22, 25, 29, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // 1~15¼º
     int[] AZ145S = { 18, 19, 21, 24, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // 1~15¼º
     int[] AZ140S = { 17, 18, 20, 23, 27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // 1~15¼º
@@ -41,6 +42,7 @@ public class StarForceManager : MonoBehaviour
     int[] AZ80S = { 2, 3, 5, 8, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // 1~15¼º
     int[] AZ75S = { 1, 2, 4, 7, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; // 1~15¼º
 
+    // ³îÀå °ø°Ý·Â
     int[] AZ150 = { 0, 0, 0, 0, 0, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22 }; // 1~15¼º
     int[] AZ140 = { 0, 0, 0, 0, 0, 8, 9, 10, 11, 12, 13, 15, 17, 19, 21 }; // 1~15¼º
     int[] AZ130 = { 0, 0, 0, 0, 0, 7, 8, 9, 10, 11, 12, 14, 16, 18, 20 }; // 1~15¼º
@@ -55,28 +57,35 @@ public class StarForceManager : MonoBehaviour
     int[] Superior150 = { 0, 0, 0, 0, 0, 9, 10, 11, 12, 13, 15, 17, 19, 21, 23 }; // 1~15¼º
 
 
-    // ±âº» ½ºÅÝ > 0 || ÀÛ ½ºÅÝ > 0
+    // 15¼º ÀÌ»ó¿¡¼­ ±âº» ½ºÅÝ > 0 || ÀÛ ½ºÅÝ > 0
     void SetStatTexts(int value)
     {
         if (value == 0)
             return;
         var curItem = itemInfo.GetCurItem();
+        int starCount = curItem.starforce;
+        if (curItem.reqClassGroup == CharacterClassGroup.NULL || curItem.reqClassGroup == CharacterClassGroup.Warrior 
+            || curItem.reqClassGroup == CharacterClassGroup.Bowman || curItem.reqClassGroup == CharacterClassGroup.Pirate || curItem.reqClassGroup == CharacterClassGroup.Hybrid)
+            texts[count++].text = "STR +" + value.ToString();
+        else if (starCount >= 15 && (curItem.basicSTR > 0 || curItem.spellSTR > 0))
+            texts[count++].text = "STR +" + value.ToString();
 
         if (curItem.reqClassGroup == CharacterClassGroup.NULL || curItem.reqClassGroup == CharacterClassGroup.Warrior 
-            || curItem.reqClassGroup == CharacterClassGroup.Bowman || curItem.reqClassGroup == CharacterClassGroup.Pirate || curItem.reqClassGroup == CharacterClassGroup.Hybrid
-            || curItem.basicSTR > 0 || curItem.spellSTR > 0)
-            texts[count++].text = "STR +" + value.ToString();
-        if (curItem.reqClassGroup == CharacterClassGroup.NULL || curItem.reqClassGroup == CharacterClassGroup.Warrior 
             || curItem.reqClassGroup == CharacterClassGroup.Bowman || curItem.reqClassGroup == CharacterClassGroup.Thief 
-            || curItem.reqClassGroup == CharacterClassGroup.Pirate || curItem.reqClassGroup == CharacterClassGroup.Hybrid
-            || curItem.basicDEX > 0 || curItem.spellDEX > 0)
+            || curItem.reqClassGroup == CharacterClassGroup.Pirate || curItem.reqClassGroup == CharacterClassGroup.Hybrid)
             texts[count++].text = "DEX +" + value.ToString();
-        if (curItem.reqClassGroup == CharacterClassGroup.NULL || curItem.reqClassGroup == CharacterClassGroup.Magician 
-            || curItem.basicINT > 0 || curItem.spellINT > 0)
+        else if (starCount >= 15 && (curItem.basicDEX > 0 || curItem.spellDEX > 0))
+            texts[count++].text = "DEX +" + value.ToString();
+
+        if (curItem.reqClassGroup == CharacterClassGroup.NULL || curItem.reqClassGroup == CharacterClassGroup.Magician )
             texts[count++].text = "INT +" + value.ToString();
+        else if (starCount >= 15 && (curItem.basicINT > 0 || curItem.spellINT > 0))
+            texts[count++].text = "INT +" + value.ToString();
+
         if (curItem.reqClassGroup == CharacterClassGroup.NULL || curItem.reqClassGroup == CharacterClassGroup.Magician 
-            || curItem.reqClassGroup == CharacterClassGroup.Thief || curItem.reqClassGroup == CharacterClassGroup.Hybrid
-            || curItem.basicLUK > 0 || curItem.spellLUK > 0)
+            || curItem.reqClassGroup == CharacterClassGroup.Thief || curItem.reqClassGroup == CharacterClassGroup.Hybrid)
+            texts[count++].text = "LUK +" + value.ToString();
+        else if (starCount >= 15 && (curItem.basicLUK > 0 || curItem.spellLUK > 0))
             texts[count++].text = "LUK +" + value.ToString();
     }
 
@@ -707,9 +716,10 @@ public class StarForceManager : MonoBehaviour
     }
 
 
-    private void AmazingUp(int starCount, int L)
+    private void AmazingUp(Item curItem)
     {
-        var curItem = itemInfo.GetCurItem();
+        int starCount = curItem.starforce++;
+        int L = curItem.reqLev;
         ItemType curitemType = curItem.type;
 
         int _stats = 0;
@@ -1134,6 +1144,7 @@ public class StarForceManager : MonoBehaviour
         if (curItem.starforce < SFmax)
         {
             curItem.starforce++;
+            itemInfo.UpdateStarForceStats(curItem);
 
             fileManager.SaveIs(itemSettingLogic.GetItemSettingData(), itemSettingLogic.GetCurPath());
             itemInfo.InfoUpdate();
@@ -1156,6 +1167,7 @@ public class StarForceManager : MonoBehaviour
         if (curItem.starforce > 0)
         {
             curItem.starforce--;
+            itemInfo.UpdateStarForceStats(curItem);
 
             fileManager.SaveIs(itemSettingLogic.GetItemSettingData(), itemSettingLogic.GetCurPath());
             itemInfo.InfoUpdate();
@@ -1173,10 +1185,9 @@ public class StarForceManager : MonoBehaviour
 
         if (curItem.isAmazing == false)
         {
-            AmazingUp(0, curItem.reqLev);
-
-            curItem.starforce = 1;
             curItem.isAmazing = true;
+            curItem.starforce = 0;
+            AmazingUp(curItem);
 
 
             fileManager.SaveIs(itemSettingLogic.GetItemSettingData(), itemSettingLogic.GetCurPath());
@@ -1191,7 +1202,7 @@ public class StarForceManager : MonoBehaviour
 
         if (curItem.starforce < 15)
         {
-            AmazingUp(curItem.starforce++, curItem.reqLev);
+            AmazingUp(curItem);
 
             fileManager.SaveIs(itemSettingLogic.GetItemSettingData(), itemSettingLogic.GetCurPath());
             itemInfo.InfoUpdate();

@@ -14,8 +14,7 @@ public class ItemButtonCTR : MonoBehaviour
     public void TurnOnItemSelectInfo()
     {
         var _go = GameObject.Find("ItemSelectInfoCanvas").transform.GetChild(0).gameObject;
-        _go.SetActive(true);
-        BackStackManager.Instance.Push(_go);
+        BackStackManager.Instance.PushAndSetTrue(_go);
 
         int index = transform.GetSiblingIndex();
         _go.GetComponent<ItemInfo>().Init(itemType, index, false, false, cell);

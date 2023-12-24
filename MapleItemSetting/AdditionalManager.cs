@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+// 추가옵션
 public class AdditionalManager : MonoBehaviour
 {
     public ItemInfo itemInfo;
@@ -44,20 +45,12 @@ public class AdditionalManager : MonoBehaviour
     {
         var curItem = itemInfo.GetCurItem();
 
-        if (!curItem.isAdditionalOption)
-        {
-            if (dropdown.value != 0)
-                dropdown.value = 0;
-            return;
-        }
-
         for (int i = 0; i < additionals.Length; i++)
-        {
             if (additionals[i] == dropdown)
-            {
                 additionalValues[i].ClearOptions();
-            }
-        }
+
+        if (!curItem.isAdditionalOption && dropdown.value != 0)
+            dropdown.value = 0;
 
         if (dropdown.value == 0)
             return;
@@ -79,6 +72,7 @@ public class AdditionalManager : MonoBehaviour
                 return;
             }
         }
+
 
         for (int i = 0; i < additionals.Length; i++)
         {
@@ -202,71 +196,11 @@ public class AdditionalManager : MonoBehaviour
                 break;
 
             case 13:
-                if (curItem.type == ItemType.Weapon || curItem.type == ItemType.Lapis)
-                {
-                    if (curItem.reqClass == CharacterClass.Zero)
-                    {
-                        if (curItem.name == "제네시스 라즐리" || curItem.name == "제네시스 라피스")
-                            list.AddRange(new List<string> { "공격력 +21", "공격력 +46", "공격력 +75", "공격력 +110", "공격력 +151" });
-                        else if(L == 200)
-                            list.AddRange(new List<string> { "공격력 +18", "공격력 +40", "공격력 +65", "공격력 +95", "공격력 +131" });
-                        else if (L == 180)
-                            list.AddRange(new List<string> { "공격력 +11", "공격력 +23", "공격력 +38", "공격력 +56", "공격력 +76" });
-                        else if (L == 170)
-                            list.AddRange(new List<string> { "공격력 +9", "공격력 +20", "공격력 +32", "공격력 +47", "공격력 +64" });
-                    }
-                    else if (curItem.name == "해방된 카이세리움")
-                    {
-                        list.AddRange(new List<string> { "공격력 +16", "공격력 +36", "공격력 +59", "공격력 +86", "공격력 +118" });
-                    }
-                    else
-                    {
-                        for (int i = C; i <= 4 + C; i++)
-                        {
-                            double tmp = ((float)basicAM / 100) * (System.Math.Truncate((float)L / 40) + 1) * i * Mathf.Pow(1.1f, i - 3);
-                            list.Add("공격력 +" + ((int)System.Math.Ceiling(tmp)).ToString());
-                        }
-                    }
-                }
-                else
-                {
-                    for (int i = C; i <= 4 + C; i++)
-                        list.Add("공격력 +" + (i).ToString());
-                }
+                list.AddRange(GetATKAdditional(curItem));
                 break;
 
             case 14:
-                if (curItem.type == ItemType.Weapon || curItem.type == ItemType.Lapis)
-                {
-                    if (curItem.reqClass == CharacterClass.Zero)
-                    {
-                        if (curItem.name == "제네시스 라즐리" || curItem.name == "제네시스 라피스")
-                            list.AddRange(new List<string> { "마력 +21", "마력 +46", "마력 +75", "마력 +110", "마력 +151" });
-                        else if (L == 200)
-                            list.AddRange(new List<string> { "마력 +18", "마력 +40", "마력 +65", "마력 +95", "마력 +131" });
-                        else if (L == 180)
-                            list.AddRange(new List<string> { "마력 +11", "마력 +23", "마력 +38", "마력 +56", "마력 +76" });
-                        else if (L == 170)
-                            list.AddRange(new List<string> { "마력 +9", "마력 +20", "마력 +32", "마력 +47", "마력 +64" });
-                    }
-                    else if (curItem.name == "해방된 카이세리움")
-                    {
-                        list.AddRange(new List<string> { "마력 +16", "마력 +36", "마력 +59", "마력 +86", "마력 +118" });
-                    }
-                    else
-                    {
-                        for (int i = C; i <= 4 + C; i++)
-                        {
-                            double tmp = ((float)basicAM / 100) * (System.Math.Truncate((float)L / 40) + 1) * i * Mathf.Pow(1.1f, i - 3);
-                            list.Add("마력 +" + ((int)System.Math.Ceiling(tmp)).ToString());
-                        }
-                    }
-                }
-                else
-                {
-                    for (int i = C; i <= 4 + C; i++)
-                        list.Add("마력 +" + (i).ToString());
-                }
+                list.AddRange(GetMAGAdditional(curItem));
                 break;
 
             case 15:
@@ -465,6 +399,62 @@ public class AdditionalManager : MonoBehaviour
         itemInfo.InfoUpdate();
 
         PopUpManager.Instance.GeneratePopUp("추가 옵션이 적용되었습니다.");
+    }
+
+    public List<string> GetATKAdditional(Item curItem)
+    {
+        var resultList = new List<string>();
+        foreach (var _num in GetATKMAGAdditional_Num(curItem))
+            resultList.Add("공격력 +" + (_num).ToString());
+        return resultList;
+    }
+
+    public List<string> GetMAGAdditional(Item curItem)
+    {
+        var resultList = new List<string>();
+        foreach (var _num in GetATKMAGAdditional_Num(curItem))
+            resultList.Add("마력 +" + (_num).ToString());
+        return resultList;
+    }
+
+    public List<int> GetATKMAGAdditional_Num(Item curItem)
+    {
+        int C = curItem.isNormalAdditional ? 1 : 3;
+        int basicAM = curItem.reqClassGroup == CharacterClassGroup.Magician ? curItem.basicMAG : curItem.basicATK;
+        var resultList = new List<int>();
+        int L = curItem.reqLev;
+        if (curItem.type == ItemType.Weapon || curItem.type == ItemType.Lapis)
+        {
+            if (curItem.reqClass == CharacterClass.Zero)
+            {
+                if (curItem.name == "제네시스 라즐리" || curItem.name == "제네시스 라피스")
+                    resultList.AddRange(new List<int> { 21, 46, 75, 110, 151 });
+                else if (L == 200)
+                    resultList.AddRange(new List<int> { 18, 40, 65, 95, 131 });
+                else if (L == 180)
+                    resultList.AddRange(new List<int> { 11, 23, 38, 56, 76 });
+                else if (L == 170)
+                    resultList.AddRange(new List<int> { 9, 20, 32, 47, 64 });
+            }
+            else if (curItem.name == "해방된 카이세리움")
+            {
+                resultList.AddRange(new List<int> {16, 36, 59, 86, 118 });
+            }
+            else
+            {
+                for (int i = C; i <= 4 + C; i++)
+                {
+                    double tmp = ((float)basicAM / 100) * (System.Math.Truncate((float)L / 40) + 1) * i * Mathf.Pow(1.1f, i - 3);
+                    resultList.Add((int)System.Math.Ceiling(tmp));
+                }
+            }
+        }
+        else
+        {
+            for (int i = C; i <= 4 + C; i++)
+                resultList.Add(i);
+        }
+        return resultList;
     }
 
 }

@@ -109,8 +109,8 @@ public class ItemInfo : MonoBehaviour
         isMine = _isMine;
         isInventory = _isInventory;
         cell = _cell;
-
-        UpdateStarForceStats();
+        var curItem = GetCurItem();
+        UpdateStarForceStats(curItem);
 
         if (_reset)
         {
@@ -122,7 +122,6 @@ public class ItemInfo : MonoBehaviour
             //spellPanel.GetComponent<SpellManager>().UpdateUpgradeCountText();
             //starforcePanel.GetComponent<StarForceManager>().UIReset();
         }
-        var curItem = GetCurItem();
 
         ItemType typeTMP = _itemType;
         if (typeTMP == ItemType.Blade || typeTMP == ItemType.Lapis || typeTMP == ItemType.Shield || typeTMP == ItemType.SubWeapon2)
@@ -220,9 +219,9 @@ public class ItemInfo : MonoBehaviour
         {
             string colorStr = ConvertGardeToColorString(curItem.upPotentialGrade);
             textNames[23].text = colorStr + "잠재옵션(" + curItem.upPotentialGrade.ToFriendlyString() + ")</color>";
-            texts[23].text = ConvertToColorString(curItem.upPotential1, colorStr);
-            texts[24].text = ConvertToColorString(curItem.upPotential2, colorStr);
-            texts[25].text = ConvertToColorString(curItem.upPotential3, colorStr);
+            texts[23].text = ConvertToColorString(curItem.upPotential[0].ToString(), colorStr);
+            texts[24].text = ConvertToColorString(curItem.upPotential[1].ToString(), colorStr);
+            texts[25].text = ConvertToColorString(curItem.upPotential[2].ToString(), colorStr);
         }
 
 
@@ -238,13 +237,13 @@ public class ItemInfo : MonoBehaviour
         {
             string colorStr = ConvertGardeToColorString(curItem.downPotentialGrade);
             textNames[24].text = colorStr + "에디셔널 잠재옵션(" + curItem.downPotentialGrade.ToFriendlyString() + ")</color>";
-            texts[26].text = ConvertToColorString(curItem.downPotential1, colorStr);
-            texts[27].text = ConvertToColorString(curItem.downPotential2, colorStr);
-            texts[28].text = ConvertToColorString(curItem.downPotential3, colorStr);
+            texts[26].text = ConvertToColorString(curItem.downPotential[0].ToString(), colorStr);
+            texts[27].text = ConvertToColorString(curItem.downPotential[1].ToString(), colorStr);
+            texts[28].text = ConvertToColorString(curItem.downPotential[2].ToString(), colorStr);
         }
 
         // 익셉셔널
-        if (curItem.exceptionalOption == "")
+        if (curItem.exceptionalOption.Count == 0)
         {
             exceptional_objs[0].SetActive(false);
             exceptional_objs[1].SetActive(false);
@@ -253,8 +252,15 @@ public class ItemInfo : MonoBehaviour
         {
             exceptional_objs[0].SetActive(true);
             exceptional_objs[1].SetActive(true);
+            exceptionalText.text = "";
+            int end = curItem.exceptionalOption.Count;
+            for (int i = 0; i < end; ++i)
+            {
+                exceptionalText.text += curItem.exceptionalOption[i].ToString();
+                if (i != end - 1)
+                    exceptionalText.text += "\n";
+            }
 
-            exceptionalText.text = curItem.exceptionalOption;
         }
 
         // 소울 관련
@@ -266,7 +272,7 @@ public class ItemInfo : MonoBehaviour
         {
             textParents[25].SetActive(true);
             texts[29].text = curItem.soul + " 적용";
-            texts[30].text = curItem.soulOption;
+            texts[30].text = curItem.soulOption.ToString();
         }
 
         if (isMine)
@@ -366,7 +372,7 @@ public class ItemInfo : MonoBehaviour
                     break;
 
                 default:
-                    Debug.Log("ConvertStatsToString Default!!!!!!!");
+                    Debug.LogError("ConvertStatsToString Default!!!!!!!");
                     break;
             }
             str += " +" + number.ToString() + p + "</color>";
@@ -399,35 +405,34 @@ public class ItemInfo : MonoBehaviour
         return colorStr + potential + "</color>";
     }
 
-    void UpdateStarForceStats()
+    public void UpdateStarForceStats(Item curItem)
     {
-        var curItem = GetCurItem();
         int starCount = curItem.starforce;
 
         if (curItem.isAmazing == true)
         {
-            SetStarForceStats(0, 0, 0);
+            SetStarForceStats(curItem, 0, 0, 0);
             return;
         }
 
         if(curItem.isSuperior == true)
         {
-            SetStarForceStats(Superior150S[starCount], Superior150[starCount], 0);
+            SetStarForceStats(curItem, Superior150S[starCount], Superior150[starCount], 0);
             return;
         }
 
         if (curItem.type == ItemType.Medal)
         {
-            SetStarForceStats(0, 0, 0);
+            SetStarForceStats(curItem, 0, 0, 0);
             return;
         }
 
 
         int L = curItem.reqLev;
-        ItemType curitemType = curItem.type;
+        ItemType _curItemType = curItem.type;
 
         int gloveAlpha = 0;
-        if (curItemType == ItemType.Gloves)
+        if (_curItemType == ItemType.Gloves)
             gloveAlpha = SFGloveBonus[starCount];
 
         int weaponA = 0;
@@ -443,78 +448,81 @@ public class ItemInfo : MonoBehaviour
 
         if (L >= 248)       // 에테르넬
         {
-            if (curitemType == ItemType.Weapon || curitemType == ItemType.Blade || curitemType == ItemType.Lapis)
-                SetStarForceStats(SF200S[starCount], SF250W[starCount] + weaponA, SF250W[starCount] + weaponM, SFHPMPBonus[starCount]);
+            if (_curItemType == ItemType.Weapon || _curItemType == ItemType.Blade || _curItemType == ItemType.Lapis)
+                SetStarForceStats(curItem, SF200S[starCount], SF250W[starCount] + weaponA, SF250W[starCount] + weaponM, SFHPMPBonus[starCount]);
             else
-                SetStarForceStats(SF250S[starCount], SF250[starCount] + gloveAlpha, SFHPMPBonus[starCount]);
+                SetStarForceStats(curItem, SF250S[starCount], SF250[starCount] + gloveAlpha, SFHPMPBonus[starCount]);
         }
         else if (L >= 198)   // 아케인
         {
-            if (curitemType == ItemType.Weapon || curitemType == ItemType.Blade || curitemType == ItemType.Lapis)
-                SetStarForceStats(SF200S[starCount], SF200W[starCount] + weaponA, SF200W[starCount] + weaponM, SFHPMPBonus[starCount]);
+            if (_curItemType == ItemType.Weapon || _curItemType == ItemType.Blade || _curItemType == ItemType.Lapis)
+                SetStarForceStats(curItem, SF200S[starCount], SF200W[starCount] + weaponA, SF200W[starCount] + weaponM, SFHPMPBonus[starCount]);
             else
-                SetStarForceStats(SF200S[starCount], SF200[starCount] + gloveAlpha, SFHPMPBonus[starCount]);
+                SetStarForceStats(curItem, SF200S[starCount], SF200[starCount] + gloveAlpha, SFHPMPBonus[starCount]);
         }
         else if (L >= 158)  // 앱솔
         {
-            if (curitemType == ItemType.Weapon || curitemType == ItemType.Blade || curitemType == ItemType.Lapis)
-                SetStarForceStats(SF160S[starCount], SF160W[starCount] + weaponA, SF160W[starCount] + weaponM, SFHPMPBonus[starCount]);
+            if (_curItemType == ItemType.Weapon || _curItemType == ItemType.Blade || _curItemType == ItemType.Lapis)
+                SetStarForceStats(curItem, SF160S[starCount], SF160W[starCount] + weaponA, SF160W[starCount] + weaponM, SFHPMPBonus[starCount]);
             else
-                SetStarForceStats(SF160S[starCount], SF160[starCount] + gloveAlpha, SFHPMPBonus[starCount]);
+                SetStarForceStats(curItem, SF160S[starCount], SF160[starCount] + gloveAlpha, SFHPMPBonus[starCount]);
         }
         else if (L >= 148)  // 루타
         {
-            if (curitemType == ItemType.Weapon || curitemType == ItemType.Blade || curitemType == ItemType.Lapis)
-                SetStarForceStats(SF150S[starCount], SF150W[starCount] + weaponA, SF150W[starCount] + weaponM, SFHPMPBonus[starCount]);
+            if (_curItemType == ItemType.Weapon || _curItemType == ItemType.Blade || _curItemType == ItemType.Lapis)
+                SetStarForceStats(curItem, SF150S[starCount], SF150W[starCount] + weaponA, SF150W[starCount] + weaponM, SFHPMPBonus[starCount]);
             else
-                SetStarForceStats(SF150S[starCount], SF150[starCount] + gloveAlpha, SFHPMPBonus[starCount]);
+                SetStarForceStats(curItem, SF150S[starCount], SF150[starCount] + gloveAlpha, SFHPMPBonus[starCount]);
         }
         else if (L >= 138)
         {
-            if (curitemType == ItemType.Weapon || curitemType == ItemType.Blade || curitemType == ItemType.Lapis)
-                SetStarForceStats(SF140S[starCount], SF140W[starCount] + weaponA, SF140W[starCount] + weaponM, SFHPMPBonus[starCount]);
+            if (_curItemType == ItemType.Weapon || _curItemType == ItemType.Blade || _curItemType == ItemType.Lapis)
+                SetStarForceStats(curItem, SF140S[starCount], SF140W[starCount] + weaponA, SF140W[starCount] + weaponM, SFHPMPBonus[starCount]);
             else
-                SetStarForceStats(SF140S[starCount], SF140[starCount] + gloveAlpha, SFHPMPBonus[starCount]);
+                SetStarForceStats(curItem, SF140S[starCount], SF140[starCount] + gloveAlpha, SFHPMPBonus[starCount]);
         }
         else
         {
-            if (curitemType == ItemType.Weapon || curitemType == ItemType.Blade || curitemType == ItemType.Lapis)
-                SetStarForceStats(SF130S[starCount], SF130W[starCount] + weaponA, SF130W[starCount] + weaponM, SFHPMPBonus[starCount]);
+            if (_curItemType == ItemType.Weapon || _curItemType == ItemType.Blade || _curItemType == ItemType.Lapis)
+                SetStarForceStats(curItem, SF130S[starCount], SF130W[starCount] + weaponA, SF130W[starCount] + weaponM, SFHPMPBonus[starCount]);
             else
-                SetStarForceStats(SF130S[starCount], SF130[starCount] + gloveAlpha, SFHPMPBonus[starCount]);
-
+                SetStarForceStats(curItem, SF130S[starCount], SF130[starCount] + gloveAlpha, SFHPMPBonus[starCount]);
         }
     }
 
-    void SetStarForceStats(int stats, int _A, int _M, int hpmp)
+    void SetStarForceStats(Item curItem, int _stats, int _A, int _M, int hpmp)
     {
-        var curItem = GetCurItem();
-
+        int stat_15 = SF250S[15];
+        int starCount = curItem.starforce;
         if (curItem.reqClassGroup == CharacterClassGroup.NULL || curItem.reqClassGroup == CharacterClassGroup.Warrior
-            || curItem.reqClassGroup == CharacterClassGroup.Bowman || curItem.reqClassGroup == CharacterClassGroup.Pirate || curItem.reqClassGroup == CharacterClassGroup.Hybrid
-            || curItem.basicSTR > 0 || curItem.spellSTR > 0)
-            curItem.starforceSTR = stats;
+            || curItem.reqClassGroup == CharacterClassGroup.Bowman || curItem.reqClassGroup == CharacterClassGroup.Pirate || curItem.reqClassGroup == CharacterClassGroup.Hybrid)
+            curItem.starforceSTR = _stats;
+        else if (starCount > 15 && (curItem.basicSTR > 0 || curItem.spellSTR > 0))
+            curItem.starforceSTR = _stats - stat_15;
         else
             curItem.starforceSTR = 0;
 
         if (curItem.reqClassGroup == CharacterClassGroup.NULL || curItem.reqClassGroup == CharacterClassGroup.Warrior
             || curItem.reqClassGroup == CharacterClassGroup.Bowman || curItem.reqClassGroup == CharacterClassGroup.Thief
-            || curItem.reqClassGroup == CharacterClassGroup.Pirate || curItem.reqClassGroup == CharacterClassGroup.Hybrid
-            || curItem.basicDEX > 0 || curItem.spellDEX > 0)
-            curItem.starforceDEX = stats;
+            || curItem.reqClassGroup == CharacterClassGroup.Pirate || curItem.reqClassGroup == CharacterClassGroup.Hybrid)
+            curItem.starforceDEX = _stats;
+        else if (starCount > 15 && (curItem.basicDEX > 0 || curItem.spellDEX > 0))
+            curItem.starforceDEX = _stats - stat_15;
         else
             curItem.starforceDEX = 0;
 
-        if (curItem.reqClassGroup == CharacterClassGroup.NULL || curItem.reqClassGroup == CharacterClassGroup.Magician
-            || curItem.basicINT > 0 || curItem.spellINT > 0)
-            curItem.starforceINT = stats;
+        if (curItem.reqClassGroup == CharacterClassGroup.NULL || curItem.reqClassGroup == CharacterClassGroup.Magician)
+            curItem.starforceINT = _stats;
+        else if (starCount > 15 && (curItem.basicINT > 0 || curItem.spellINT > 0))
+            curItem.starforceINT = _stats - stat_15;
         else
             curItem.starforceINT = 0;
 
         if (curItem.reqClassGroup == CharacterClassGroup.NULL || curItem.reqClassGroup == CharacterClassGroup.Magician
-            || curItem.reqClassGroup == CharacterClassGroup.Thief || curItem.reqClassGroup == CharacterClassGroup.Hybrid
-            || curItem.basicLUK > 0 || curItem.spellLUK > 0)
-            curItem.starforceLUK = stats;
+            || curItem.reqClassGroup == CharacterClassGroup.Thief || curItem.reqClassGroup == CharacterClassGroup.Hybrid)
+            curItem.starforceLUK = _stats;
+        else if (starCount > 15 && (curItem.basicLUK > 0 || curItem.spellLUK > 0))
+            curItem.starforceLUK = _stats - stat_15;
         else
             curItem.starforceLUK = 0;
 
@@ -541,9 +549,9 @@ public class ItemInfo : MonoBehaviour
             curItem.starforceMaxMP = hpmp;
     }
 
-    void SetStarForceStats(int stats, int am, int hpmp)
+    void SetStarForceStats(Item curItem, int stats, int am, int hpmp)
     {
-        SetStarForceStats(stats, am, am, hpmp);
+        SetStarForceStats(curItem, stats, am, am, hpmp);
     }
 
     public Item GetCurItem()
@@ -580,7 +588,8 @@ public class ItemInfo : MonoBehaviour
             PopUpManager.Instance.GeneratePopUp("직업군이 일치하지 않습니다.");
             return;
         }
-        else if (curItemSettingData.charaacterClassGroup == CharacterClassGroup.Hybrid && curItem.reqClassGroup != CharacterClassGroup.Thief && curItem.reqClassGroup != CharacterClassGroup.Pirate) //제논
+        else if (curItemSettingData.charaacterClassGroup == CharacterClassGroup.Hybrid && curItem.reqClassGroup != CharacterClassGroup.Thief && curItem.reqClassGroup != CharacterClassGroup.Pirate
+            && curItem.reqClassGroup != CharacterClassGroup.Hybrid && curItem.reqClassGroup != CharacterClassGroup.NULL) //제논
         {
             PopUpManager.Instance.GeneratePopUp("직업군이 일치하지 않습니다.");
             return;
@@ -588,8 +597,7 @@ public class ItemInfo : MonoBehaviour
 
         if (curItem.type == ItemType.Ring)
         {
-            ringSelectPanel.SetActive(true);
-            BackStackManager.Instance.Push(ringSelectPanel);
+            BackStackManager.Instance.PushAndSetTrue(ringSelectPanel);
             for(int i = 0; i < 4; i++)
             {
                 if (curItemSettingData.items[3-i].type == ItemType.NULL)
@@ -605,8 +613,7 @@ public class ItemInfo : MonoBehaviour
         }
         else if (curItem.type == ItemType.Pendant)
         {
-            pendantSelectPanel.SetActive(true);
-            BackStackManager.Instance.Push(pendantSelectPanel);
+            BackStackManager.Instance.PushAndSetTrue(pendantSelectPanel);
             for (int i = 0; i < 2; i++)
             {
                 if (curItemSettingData.items[6 - i].type == ItemType.NULL)
@@ -657,7 +664,8 @@ public class ItemInfo : MonoBehaviour
                 PopUpManager.Instance.GeneratePopUp("직업군이 일치하지 않습니다.");
                 return;
             }
-            else if (curItemSettingData.charaacterClassGroup == CharacterClassGroup.Hybrid && newItem.reqClassGroup != CharacterClassGroup.Thief && newItem.reqClassGroup != CharacterClassGroup.Pirate) //제논
+            else if (curItemSettingData.charaacterClassGroup == CharacterClassGroup.Hybrid && newItem.reqClassGroup != CharacterClassGroup.Thief && newItem.reqClassGroup != CharacterClassGroup.Pirate 
+                && newItem.reqClassGroup != CharacterClassGroup.Hybrid && newItem.reqClassGroup != CharacterClassGroup.NULL) //제논
             {
                 PopUpManager.Instance.GeneratePopUp("직업군이 일치하지 않습니다.");
                 return;
@@ -733,14 +741,12 @@ public class ItemInfo : MonoBehaviour
 
     public void TurnOffSelectRing()
     {
-        BackStackManager.Instance.Pop();
-        ringSelectPanel.SetActive(false);
+        BackStackManager.Instance.PopAndSetFalse();
     }
 
     public void TurnOffSelectPendant()
     {
-        BackStackManager.Instance.Pop();
-        pendantSelectPanel.SetActive(false);
+        BackStackManager.Instance.PopAndSetFalse();
     }
 
 

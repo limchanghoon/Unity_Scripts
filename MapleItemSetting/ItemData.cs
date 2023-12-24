@@ -159,7 +159,7 @@ public class ItemDictionary
         ringList[t].upPotentialPossible = false;
         ringList[t].downPotentialPossible = false;
         ringList[t].upPotentialGrade = OptionGrade.Epic;
-        ringList[t++].upPotential1 = "크리티컬 데미지 : +5%";
+        ringList[t++].upPotential[0] = new Potential("크리티컬 데미지 : +5%");
 
         ringList.Add(new Item(ItemType.Ring, "오닉스 링(DEX)", 30, 3, 3, 3, 3, 30, 0, 0, 0, 0, 0, 0, 0, -1));
         ringList[t].basicMaxMP = 30;
@@ -176,7 +176,7 @@ public class ItemDictionary
         ringList[t].upPotentialPossible = false;
         ringList[t].downPotentialPossible = false;
         ringList[t].upPotentialGrade = OptionGrade.Epic;
-        ringList[t++].upPotential1 = "크리티컬 데미지 : +5%";
+        ringList[t++].upPotential[0] = new Potential("크리티컬 데미지 : +5%");
 
         ringList.Add(new Item(ItemType.Ring, "오닉스 링(INT)", 30, 3, 3, 3, 3, 30, 0, 0, 0, 0, 0, 0, 0, -1));
         ringList[t].basicMaxMP = 30;
@@ -193,7 +193,7 @@ public class ItemDictionary
         ringList[t].upPotentialPossible = false;
         ringList[t].downPotentialPossible = false;
         ringList[t].upPotentialGrade = OptionGrade.Epic;
-        ringList[t++].upPotential1 = "크리티컬 데미지 : +5%";
+        ringList[t++].upPotential[0] = new Potential("크리티컬 데미지 : +5%");
 
         ringList.Add(new Item(ItemType.Ring, "오닉스 링(LUK)", 30, 3, 3, 3, 3, 30, 0, 0, 0, 0, 0, 0, 0, -1));
         ringList[t].basicMaxMP = 30;
@@ -210,7 +210,7 @@ public class ItemDictionary
         ringList[t].upPotentialPossible = false;
         ringList[t].downPotentialPossible = false;
         ringList[t].upPotentialGrade = OptionGrade.Epic;
-        ringList[t++].upPotential1 = "크리티컬 데미지 : +5%";
+        ringList[t++].upPotential[0] = new Potential("크리티컬 데미지 : +5%");
 
         ringList.Add(new Item(ItemType.Ring, "오닉스 링(MaxHP)", 30, 3, 3, 3, 3, 30, 0, 0, 0, 0, 0, 0, 0, -1));
         ringList[t].basicMaxMP = 7;
@@ -227,7 +227,7 @@ public class ItemDictionary
         ringList[t].upPotentialPossible = false;
         ringList[t].downPotentialPossible = false;
         ringList[t].upPotentialGrade = OptionGrade.Epic;
-        ringList[t++].upPotential1 = "크리티컬 데미지 : +5%";
+        ringList[t++].upPotential[0] = new Potential("크리티컬 데미지 : +5%");
 
         ringList.Add(new Item(ItemType.Ring, "오닉스 링(올스탯)", 30, 3, 3, 3, 3, 30, 0, 0, 0, 0, 0, 0, 0, -1));
         ringList[t].basicMaxMP = 30;
@@ -244,7 +244,7 @@ public class ItemDictionary
         ringList[t].upPotentialPossible = false;
         ringList[t].downPotentialPossible = false;
         ringList[t].upPotentialGrade = OptionGrade.Epic;
-        ringList[t++].upPotential1 = "크리티컬 데미지 : +5%";
+        ringList[t++].upPotential[0] = new Potential("크리티컬 데미지 : +5%");
 
         ringList.Add(new Item(ItemType.Ring, "리부트 오닉스 링", 30, 23, 23, 23, 23, 1030, 0, 0, 0, 0, 0, 0, 0, -1));
         ringList[t].basicMaxMP = 30;
@@ -261,7 +261,7 @@ public class ItemDictionary
         ringList[t].upPotentialPossible = false;
         ringList[t].downPotentialPossible = false;
         ringList[t].upPotentialGrade = OptionGrade.Epic;
-        ringList[t++].upPotential1 = "크리티컬 데미지 : +5%";
+        ringList[t++].upPotential[0] = new Potential("크리티컬 데미지 : +5%");
 
 
         ringList.Add(new Item(ItemType.Ring, "벤젼스 링", 120, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1));
@@ -372,7 +372,7 @@ public class ItemDictionary
         ringList.Add(new Item(ItemType.Ring, "이터널 플레임 링", 120, 40, 40, 40, 40, 4000, 25, 25, 0, 0, 0, 0, 0, -1));
         ringList[t].basicMaxMP = 4000;
         ringList[t].upPotentialGrade = OptionGrade.Unique;
-        ringList[t].upPotential1 = "잠재능력이 봉인되어 있습니다.";
+        ringList[t].upPotential[0] = new Potential("잠재능력이 봉인되어 있습니다.");
         ringList[t++].isStarForce = false;
 
 
@@ -516,15 +516,20 @@ public class ItemDictionary
 
         //전사
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 빅 마운틴", 150, 40, 40, 0, 0, 0, 128, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.ArmCannon;
         weaponList[t].setName = SetName.Rootabis_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 파일 갓", 160, 60, 60, 0, 0, 0, 154, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.ArmCannon;
         weaponList[t].setName = SetName.Absolute_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 엘라하", 200, 100, 100, 0, 0, 0, 221, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.ArmCannon;
         weaponList[t].setName = SetName.Arcane_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 엘라하", 200, 150, 150, 0, 0, 0, 255, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.ArmCannon;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellSTR = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -536,15 +541,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 데스브링어", 150, 40, 0, 0, 0, 2000, 171, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Desperado;
         weaponList[t].setName = SetName.Rootabis_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 데스페라도", 160, 60, 0, 0, 0, 2250, 205, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Desperado;
         weaponList[t].setName = SetName.Absolute_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 데스페라도", 200, 100, 0, 0, 0, 2500, 295, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Desperado;
         weaponList[t].setName = SetName.Arcane_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 데스페라도", 200, 150, 0, 0, 0, 2800, 340, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.Desperado;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellMaxHP = 1600;
         weaponList[t].SetCompletedUpgrade(8);
@@ -556,18 +566,24 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "해방된 카이세리움", 150, 200, 200, 0, 0, 0, 400, 0, 0, 0, 0, 0, 2, -1));
+        weaponList[t].weaponType = WeaponType.TwohandedSword;
         weaponList[t].isNormalAdditional = true;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 페니텐시아", 150, 40, 40, 0, 0, 0, 171, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.TwohandedSword;
         weaponList[t].setName = SetName.Rootabis_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 브로드세이버", 160, 60, 60, 0, 0, 0, 205, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.TwohandedSword;
         weaponList[t].setName = SetName.Absolute_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 투핸드소드", 200, 100, 100, 0, 0, 0, 295, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.TwohandedSword;
         weaponList[t].setName = SetName.Arcane_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 투핸드소드", 200, 150, 150, 0, 0, 0, 340, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.TwohandedSword;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellSTR = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -579,15 +595,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 배틀클리버", 150, 40, 40, 0, 0, 0, 171, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.TwoHandedAxe;
         weaponList[t].setName = SetName.Rootabis_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 브로드엑스", 160, 60, 60, 0, 0, 0, 205, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.TwoHandedAxe;
         weaponList[t].setName = SetName.Absolute_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 투핸드엑스", 200, 100, 100, 0, 0, 0, 295, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.TwoHandedAxe;
         weaponList[t].setName = SetName.Arcane_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 투핸드엑스", 200, 150, 150, 0, 0, 0, 340, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.TwoHandedAxe;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellSTR = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -599,15 +620,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 라이트닝어", 150, 40, 40, 0, 0, 0, 171, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.TwoHandedBluntWeapon;
         weaponList[t].setName = SetName.Rootabis_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 브로드해머", 160, 60, 60, 0, 0, 0, 205, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.TwoHandedBluntWeapon;
         weaponList[t].setName = SetName.Absolute_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 투핸드해머", 200, 100, 100, 0, 0, 0, 295, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.TwoHandedBluntWeapon;
         weaponList[t].setName = SetName.Arcane_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 투핸드해머", 200, 150, 150, 0, 0, 0, 340, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.TwoHandedBluntWeapon;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellSTR = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -619,15 +645,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 브류나크", 150, 40, 40, 0, 0, 0, 171, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Spear;
         weaponList[t].setName = SetName.Rootabis_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 피어싱스피어", 160, 60, 60, 0, 0, 0, 205, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Spear;
         weaponList[t].setName = SetName.Absolute_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 스피어", 200, 100, 100, 0, 0, 0, 295, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Spear;
         weaponList[t].setName = SetName.Arcane_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 스피어", 200, 150, 150, 0, 0, 0, 340, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.Spear;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellSTR = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -639,18 +670,23 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "라즐리 7형", 170, 40, 40, 0, 0, 0, 169, 0, 30, 10, 0, 0, 9, -1));
+        weaponList[t].weaponType = WeaponType.Longsword;
         weaponList[t].isNormalAdditional = true;
         weaponList[t].reqClass = CharacterClass.Zero;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "라즐리 8형", 180, 60, 60, 0, 0, 0, 203, 0, 30, 10, 0, 0, 9, -1));
+        weaponList[t].weaponType = WeaponType.Longsword;
         weaponList[t].isNormalAdditional = true;
         weaponList[t].reqClass = CharacterClass.Zero;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "라즐리 9형", 200, 100, 100, 0, 0, 0, 293, 0, 30, 20, 0, 0, 9, -1));
+        weaponList[t].weaponType = WeaponType.Longsword;
         weaponList[t].isNormalAdditional = true;
         weaponList[t].reqClass = CharacterClass.Zero;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 라즐리", 200, 150, 150, 0, 0, 0, 337, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.Longsword;
+        weaponList[t].isGenesis = true;
         weaponList[t].isNormalAdditional = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellSTR = 32;
@@ -664,15 +700,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 포기브니스", 150, 40, 40, 0, 0, 0, 171, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Bladecaster;
         weaponList[t].setName = SetName.Rootabis_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 튜너", 160, 60, 60, 0, 0, 0, 205, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Bladecaster;
         weaponList[t].setName = SetName.Absolute_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 튜너", 200, 100, 100, 0, 0, 0, 295, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Bladecaster;
         weaponList[t].setName = SetName.Arcane_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 튜너", 200, 150, 150, 0, 0, 0, 340, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.Bladecaster;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellSTR = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -684,15 +725,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 문글레이브", 150, 40, 40, 0, 0, 0, 153, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Polearm;
         weaponList[t].setName = SetName.Rootabis_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 핼버드", 160, 60, 60, 0, 0, 0, 184, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Polearm;
         weaponList[t].setName = SetName.Absolute_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 폴암", 200, 100, 100, 0, 0, 0, 264, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Polearm;
         weaponList[t].setName = SetName.Arcane_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 폴암", 200, 150, 150, 0, 0, 0, 304, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.Polearm;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellSTR = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -704,15 +750,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 미스틸테인", 150, 40, 40, 0, 0, 0, 164, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.OnehandedSword;
         weaponList[t].setName = SetName.Rootabis_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 세이버", 160, 60, 60, 0, 0, 0, 197, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.OnehandedSword;
         weaponList[t].setName = SetName.Absolute_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 세이버", 200, 100, 100, 0, 0, 0, 283, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.OnehandedSword;
         weaponList[t].setName = SetName.Arcane_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 세이버", 200, 150, 150, 0, 0, 0, 326, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.OnehandedSword;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellSTR = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -724,15 +775,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 트윈클리버", 150, 40, 40, 0, 0, 0, 164, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.OnehandedAxe;
         weaponList[t].setName = SetName.Rootabis_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 엑스", 160, 60, 60, 0, 0, 0, 197, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.OnehandedAxe;
         weaponList[t].setName = SetName.Absolute_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 엑스", 200, 100, 100, 0, 0, 0, 283, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.OnehandedAxe;
         weaponList[t].setName = SetName.Arcane_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 엑스", 200, 150, 150, 0, 0, 0, 326, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.OnehandedAxe;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellSTR = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -744,15 +800,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 골디언해머", 150, 40, 40, 0, 0, 0, 164, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.OneHandedMaces;
         weaponList[t].setName = SetName.Rootabis_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 비트해머", 160, 60, 60, 0, 0, 0, 197, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.OneHandedMaces;
         weaponList[t].setName = SetName.Absolute_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 해머", 200, 100, 100, 0, 0, 0, 283, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.OneHandedMaces;
         weaponList[t].setName = SetName.Arcane_Warrior;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 해머", 200, 150, 150, 0, 0, 0, 326, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.OneHandedMaces;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellSTR = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -767,15 +828,20 @@ public class ItemDictionary
 
         // 궁수
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 듀얼윈드윙", 150, 40, 40, 0, 0, 0, 160, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.DualBowguns;
         weaponList[t].setName = SetName.Rootabis_Bowman;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Bowman;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 듀얼보우건", 160, 60, 60, 0, 0, 0, 192, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.DualBowguns;
         weaponList[t].setName = SetName.Absolute_Bowman;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Bowman;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 듀얼보우건", 200, 100, 100, 0, 0, 0, 276, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.DualBowguns;
         weaponList[t].setName = SetName.Arcane_Bowman;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Bowman;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 듀얼보우건", 200, 150, 150, 0, 0, 0, 318, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.DualBowguns;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellDEX = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -787,15 +853,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 나이트체이서", 150, 40, 40, 0, 0, 0, 160, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Whispershot;
         weaponList[t].setName = SetName.Rootabis_Bowman;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Bowman;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 브레스 슈터", 160, 60, 60, 0, 0, 0, 192, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Whispershot;
         weaponList[t].setName = SetName.Absolute_Bowman;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Bowman;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 브레스 슈터", 200, 100, 100, 0, 0, 0, 276, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Whispershot;
         weaponList[t].setName = SetName.Arcane_Bowman;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Bowman;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 브레스 슈터", 200, 150, 150, 0, 0, 0, 318, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.Whispershot;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellDEX = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -807,15 +878,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 윈드윙슈터", 150, 40, 40, 0, 0, 0, 164, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Crossbow;
         weaponList[t].setName = SetName.Rootabis_Bowman;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Bowman;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 크로스보우", 160, 60, 60, 0, 0, 0, 197, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Crossbow;
         weaponList[t].setName = SetName.Absolute_Bowman;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Bowman;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 크로스보우", 200, 100, 100, 0, 0, 0, 283, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Crossbow;
         weaponList[t].setName = SetName.Arcane_Bowman;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Bowman;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 크로스보우", 200, 150, 150, 0, 0, 0, 326, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.Crossbow;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellDEX = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -827,15 +903,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 에인션트 보우", 150, 40, 40, 0, 0, 0, 160, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.AncientBow;
         weaponList[t].setName = SetName.Rootabis_Bowman;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Bowman;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 에인션트 보우", 160, 60, 60, 0, 0, 0, 192, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.AncientBow;
         weaponList[t].setName = SetName.Absolute_Bowman;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Bowman;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 에인션트 보우", 200, 100, 100, 0, 0, 0, 276, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.AncientBow;
         weaponList[t].setName = SetName.Arcane_Bowman;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Bowman;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 에인션트 보우", 200, 150, 150, 0, 0, 0, 318, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.AncientBow;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellDEX = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -847,15 +928,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 윈드체이서", 150, 40, 40, 0, 0, 0, 160, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Bow;
         weaponList[t].setName = SetName.Rootabis_Bowman;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Bowman;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 슈팅보우", 160, 60, 60, 0, 0, 0, 192, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Bow;
         weaponList[t].setName = SetName.Absolute_Bowman;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Bowman;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 보우", 200, 100, 100, 0, 0, 0, 276, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Bow;
         weaponList[t].setName = SetName.Arcane_Bowman;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Bowman;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 보우", 200, 150, 150, 0, 0, 0, 318, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.Bow;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellDEX = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -869,15 +955,20 @@ public class ItemDictionary
 
         // 마법사
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 ESP리미터", 150, 0, 0, 40, 40, 0, 119, 201, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.ESPLimiter;
         weaponList[t].setName = SetName.Rootabis_Magician;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Magician;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 ESP리미터", 160, 0, 0, 60, 60, 0, 143, 241, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.ESPLimiter;
         weaponList[t].setName = SetName.Absolute_Magician;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Magician;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 ESP리미터", 200, 0, 0, 100, 100, 0, 206, 347, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.ESPLimiter;
         weaponList[t].setName = SetName.Arcane_Magician;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Magician;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 ESP리미터", 200, 0, 0, 150, 150, 0, 237, 400, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.ESPLimiter;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellMAG = 72;
         weaponList[t].spellINT = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -889,15 +980,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 매직 건틀렛", 150, 0, 0, 40, 40, 0, 119, 201, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.LucentGauntlet;
         weaponList[t].setName = SetName.Rootabis_Magician;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Magician;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 매직 건틀렛", 160, 0, 0, 60, 60, 0, 143, 241, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.LucentGauntlet;
         weaponList[t].setName = SetName.Absolute_Magician;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Magician;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 매직 건틀렛", 200, 0, 0, 100, 100, 0, 206, 347, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.LucentGauntlet;
         weaponList[t].setName = SetName.Arcane_Magician;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Magician;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 매직 건틀렛", 200, 0, 0, 150, 150, 0, 237, 400, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.LucentGauntlet;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellMAG = 72;
         weaponList[t].spellINT = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -909,15 +1005,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 마나크래들", 150, 0, 0, 40, 40, 0, 119, 201, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.ShiningRod;
         weaponList[t].setName = SetName.Rootabis_Magician;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Magician;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 샤이닝로드", 160, 0, 0, 60, 60, 0, 143, 241, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.ShiningRod;
         weaponList[t].setName = SetName.Absolute_Magician;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Magician;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 샤이닝로드", 200, 0, 0, 100, 100, 0, 206, 347, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.ShiningRod;
         weaponList[t].setName = SetName.Arcane_Magician;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Magician;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 샤이닝로드", 200, 0, 0, 150, 150, 0, 237, 400, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.ShiningRod;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellMAG = 72;
         weaponList[t].spellINT = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -929,15 +1030,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 마나크라운", 150, 0, 0, 40, 40, 0, 126, 204, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Staff;
         weaponList[t].setName = SetName.Rootabis_Magician;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Magician;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 스펠링스태프", 160, 0, 0, 60, 60, 0, 151, 245, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Staff;
         weaponList[t].setName = SetName.Absolute_Magician;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Magician;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 스태프", 200, 0, 0, 100, 100, 0, 218, 353, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Staff;
         weaponList[t].setName = SetName.Arcane_Magician;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Magician;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 스태프", 200, 0, 0, 150, 150, 0, 251, 406, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.Staff;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellMAG = 72;
         weaponList[t].spellINT = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -949,15 +1055,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 마나테이커", 150, 0, 0, 40, 40, 0, 119, 201, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Wand;
         weaponList[t].setName = SetName.Rootabis_Magician;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Magician;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 스펠링완드", 160, 0, 0, 60, 60, 0, 143, 241, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Wand;
         weaponList[t].setName = SetName.Absolute_Magician;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Magician;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 완드", 200, 0, 0, 100, 100, 0, 206, 347, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Wand;
         weaponList[t].setName = SetName.Arcane_Magician;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Magician;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 완드", 200, 0, 0, 150, 150, 0, 237, 400, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.Wand;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellMAG = 72;
         weaponList[t].spellINT = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -971,15 +1082,20 @@ public class ItemDictionary
 
         // 도적
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 다마스커스", 150, 0, 40, 0, 40, 0, 160, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Dagger;
         weaponList[t].setName = SetName.Rootabis_Thief;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Thief;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 슬래셔", 160, 0, 60, 0, 60, 0, 192, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Dagger;
         weaponList[t].setName = SetName.Absolute_Thief;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Thief;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 대거", 200, 0, 100, 0, 100, 0, 276, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Dagger;
         weaponList[t].setName = SetName.Arcane_Thief;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Thief;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 대거", 200, 0, 150, 0, 150, 0, 318, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.Dagger;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellLUK = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -991,15 +1107,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 용선", 150, 0, 40, 0, 40, 0, 160, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.RitualFan;
         weaponList[t].setName = SetName.Rootabis_Thief;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Thief;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 괴선", 160, 0, 60, 0, 60, 0, 192, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.RitualFan;
         weaponList[t].setName = SetName.Absolute_Thief;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Thief;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 초선", 200, 0, 100, 0, 100, 0, 276, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.RitualFan;
         weaponList[t].setName = SetName.Arcane_Thief;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Thief;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 창세선", 200, 0, 150, 0, 150, 0, 318, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.RitualFan;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellLUK = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -1011,15 +1132,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 리스크홀더", 150, 0, 40, 0, 40, 0, 86, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Claw;
         weaponList[t].setName = SetName.Rootabis_Thief;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Thief;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 리벤지가즈", 160, 0, 60, 0, 60, 0, 103, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Claw;
         weaponList[t].setName = SetName.Absolute_Thief;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Thief;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 가즈", 200, 0, 100, 0, 100, 0, 149, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Claw;
         weaponList[t].setName = SetName.Arcane_Thief;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Thief;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 가즈", 200, 0, 150, 0, 150, 0, 172, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.Claw;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellLUK = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -1031,15 +1157,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 체인", 150, 0, 40, 0, 40, 0, 160, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Chain;
         weaponList[t].setName = SetName.Rootabis_Thief;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Thief;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 체인", 160, 0, 60, 0, 60, 0, 192, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Chain;
         weaponList[t].setName = SetName.Absolute_Thief;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Thief;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 체인", 200, 0, 100, 0, 100, 0, 276, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Chain;
         weaponList[t].setName = SetName.Arcane_Thief;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Thief;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 체인", 200, 0, 150, 0, 150, 0, 318, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.Chain;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellLUK = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -1051,15 +1182,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 클레르시엘", 150, 0, 40, 0, 40, 0, 164, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Cane;
         weaponList[t].setName = SetName.Rootabis_Thief;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Thief;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 핀쳐케인", 160, 0, 60, 0, 60, 0, 197, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Cane;
         weaponList[t].setName = SetName.Absolute_Thief;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Thief;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 케인", 200, 0, 100, 0, 100, 0, 283, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Cane;
         weaponList[t].setName = SetName.Arcane_Thief;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Thief;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 케인", 200, 0, 150, 0, 150, 0, 326, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.Cane;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellLUK = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -1071,15 +1207,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 차크람", 150, 0, 40, 0, 40, 0, 160, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Chakram;
         weaponList[t].setName = SetName.Rootabis_Thief;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Thief;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 차크람", 160, 0, 60, 0, 60, 0, 192, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Chakram;
         weaponList[t].setName = SetName.Absolute_Thief;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Thief;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 차크람", 200, 0, 100, 0, 100, 0, 276, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Chakram;
         weaponList[t].setName = SetName.Arcane_Thief;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Thief;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 이클립스", 200, 0, 150, 0, 150, 0, 318, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.Chakram;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellLUK = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -1093,15 +1234,20 @@ public class ItemDictionary
 
         // 해적
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 첼리스카", 150, 40, 40, 0, 0, 0, 125, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Gun;
         weaponList[t].setName = SetName.Rootabis_Pirate;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Pirate;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 포인팅건", 160, 60, 60, 0, 0, 0, 150, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Gun;
         weaponList[t].setName = SetName.Absolute_Pirate;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Pirate;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 피스톨", 200, 100, 100, 0, 0, 0, 216, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Gun;
         weaponList[t].setName = SetName.Arcane_Pirate;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Pirate;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 피스톨", 200, 150, 150, 0, 0, 0, 249, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.Gun;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellDEX = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -1113,15 +1259,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 펜리르탈론", 150, 40, 40, 0, 0, 0, 128, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Knuckle;
         weaponList[t].setName = SetName.Rootabis_Pirate;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Pirate;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 블로우너클", 160, 60, 60, 0, 0, 0, 154, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Knuckle;
         weaponList[t].setName = SetName.Absolute_Pirate;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Pirate;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 클로", 200, 100, 100, 0, 0, 0, 221, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.Knuckle;
         weaponList[t].setName = SetName.Arcane_Pirate;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Pirate;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 클로", 200, 150, 150, 0, 0, 0, 255, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.Knuckle;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellSTR = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -1133,15 +1284,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 엔젤릭슈터", 150, 40, 40, 0, 0, 0, 128, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.SoulShooter;
         weaponList[t].setName = SetName.Rootabis_Pirate;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Pirate;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 소울슈터", 160, 60, 60, 0, 0, 0, 154, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.SoulShooter;
         weaponList[t].setName = SetName.Absolute_Pirate;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Pirate;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 소울슈터", 200, 100, 100, 0, 0, 0, 221, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.SoulShooter;
         weaponList[t].setName = SetName.Arcane_Pirate;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Pirate;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 소울슈터", 200, 150, 150, 0, 0, 0, 255, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.SoulShooter;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellDEX = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -1153,15 +1309,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 러스터캐논", 150, 40, 40, 0, 0, 0, 175, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.HandCannon;
         weaponList[t].setName = SetName.Rootabis_Pirate;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Pirate;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 블래스트캐논", 160, 60, 60, 0, 0, 0, 210, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.HandCannon;
         weaponList[t].setName = SetName.Absolute_Pirate;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Pirate;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 시즈건", 200, 100, 100, 0, 0, 0, 302, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.HandCannon;
         weaponList[t].setName = SetName.Arcane_Pirate;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Pirate;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 시즈건", 200, 150, 150, 0, 0, 0, 348, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.HandCannon;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellSTR = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -1178,15 +1339,20 @@ public class ItemDictionary
 
         // 제논
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 스플릿엣지(도적)", 150, 0, 40, 0, 40, 0, 128, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.WhipBlade;
         weaponList[t].setName = SetName.Rootabis_Thief;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Hybrid;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 에너지소드(도적)", 160, 0, 60, 0, 60, 0, 154, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.WhipBlade;
         weaponList[t].setName = SetName.Absolute_Thief;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Hybrid;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 에너지체인(도적)", 200, 0, 100, 0, 100, 0, 221, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.WhipBlade;
         weaponList[t].setName = SetName.Arcane_Thief;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Hybrid;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 에너지체인(도적)", 200, 0, 150, 0, 150, 0, 255, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.WhipBlade;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellLUK = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -1198,15 +1364,20 @@ public class ItemDictionary
 
 
         weaponList.Add(new Item(ItemType.Weapon, "파프니르 스플릿엣지(해적)", 150, 40, 40, 0, 0, 0, 128, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.WhipBlade;
         weaponList[t].setName = SetName.Rootabis_Pirate;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Hybrid;
         weaponList.Add(new Item(ItemType.Weapon, "앱솔랩스 에너지소드(해적)", 160, 60, 60, 0, 0, 0, 154, 0, 30, 10, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.WhipBlade;
         weaponList[t].setName = SetName.Absolute_Pirate;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Hybrid;
         weaponList.Add(new Item(ItemType.Weapon, "아케인셰이드 에너지체인(해적)", 200, 100, 100, 0, 0, 0, 221, 0, 30, 20, 0, 0, 9, 10));
+        weaponList[t].weaponType = WeaponType.WhipBlade;
         weaponList[t].setName = SetName.Arcane_Pirate;
         weaponList[t++].reqClassGroup = CharacterClassGroup.Hybrid;
         weaponList.Add(new Item(ItemType.Weapon, "제네시스 에너지체인(해적)", 200, 150, 150, 0, 0, 0, 255, 0, 30, 20, 0, 0, 0, -1));
+        weaponList[t].weaponType = WeaponType.WhipBlade;
+        weaponList[t].isGenesis = true;
         weaponList[t].spellATK = 72;
         weaponList[t].spellLUK = 32;
         weaponList[t].SetCompletedUpgrade(8);
@@ -2450,18 +2621,26 @@ public class ItemDictionary
 
         // 제로
         subWeaponList.Add(new Item(ItemType.Lapis, "라피스 7형", 170, 40, 40, 0, 0, 0, 173, 0, 30, 10, 0, 0, 9, -1));
+        subWeaponList[t].weaponType = WeaponType.HeavySword;
+        subWeaponList[t].isNormalAdditional = true;
+        subWeaponList[t].reqClass = CharacterClass.Zero;
+        subWeaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
+
         subWeaponList.Add(new Item(ItemType.Lapis, "라피스 8형", 180, 60, 60, 0, 0, 0, 207, 0, 30, 10, 0, 0, 9, -1));
+        subWeaponList[t].weaponType = WeaponType.HeavySword;
+        subWeaponList[t].isNormalAdditional = true;
+        subWeaponList[t].reqClass = CharacterClass.Zero;
+        subWeaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
+
         subWeaponList.Add(new Item(ItemType.Lapis, "라피스 9형", 200, 100, 100, 0, 0, 0, 297, 0, 30, 20, 0, 0, 9, -1));
+        subWeaponList[t].weaponType = WeaponType.HeavySword;
+        subWeaponList[t].isNormalAdditional = true;
+        subWeaponList[t].reqClass = CharacterClass.Zero;
+        subWeaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
+
         subWeaponList.Add(new Item(ItemType.Lapis, "제네시스 라피스", 200, 150, 150, 0, 0, 0, 342, 0, 30, 20, 0, 0, 0, -1));
-        subWeaponList[t].isNormalAdditional = true;
-        subWeaponList[t].reqClass = CharacterClass.Zero;
-        subWeaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
-        subWeaponList[t].isNormalAdditional = true;
-        subWeaponList[t].reqClass = CharacterClass.Zero;
-        subWeaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
-        subWeaponList[t].isNormalAdditional = true;
-        subWeaponList[t].reqClass = CharacterClass.Zero;
-        subWeaponList[t++].reqClassGroup = CharacterClassGroup.Warrior;
+        subWeaponList[t].weaponType = WeaponType.HeavySword;
+        subWeaponList[t].isGenesis = true;
         subWeaponList[t].isNormalAdditional = true;
         subWeaponList[t].spellATK = 72;
         subWeaponList[t].spellSTR = 32;
@@ -2564,8 +2743,8 @@ public class ItemDictionary
 
         heartList[t].setName = SetName.BlackBossTrinket;
         heartList[t].upPotentialGrade = OptionGrade.Epic;
-        heartList[t].upPotential1 = "보스 몬스터 공격 시 데미지 : +30%";
-        heartList[t].upPotential2 = "몬스터 방어율 무시 : +30%";
+        heartList[t].upPotential[0] = new Potential("보스 몬스터 공격 시 데미지 : +30%");
+        heartList[t].upPotential[1] = new Potential("몬스터 방어율 무시 : +30%");
         heartList[t].upPotentialPossible = false;
         heartList[t].downPotentialPossible = false;
         heartList[t].isAdditionalOption = false;
@@ -2578,7 +2757,32 @@ public class ItemDictionary
 }
 
 
-
+[System.Serializable]
+public class PlusStat
+{
+    public bool isReboot = false;
+    public int Level = 260;
+    public int[] stats = new int[15];
+    public float criDamage = 0f;
+    /*
+    public int STR = 0;
+    public int STR_C = 0;
+    public int DEX = 0;
+    public int DEX_C = 0;
+    public int INT = 0;
+    public int INT_C = 0;
+    public int LUK = 0;
+    public int LUK_C = 0;
+    public int MaxHP = 0;
+    public int MaxHP_C = 0;
+    public int MaxHP_P = 0;
+    public int ATK = 0;
+    public int MAG = 0;
+    public int Damage = 0;
+    public int BossDamage = 0;
+    public float CriDamage = 0;
+    */
+}
 
 [System.Serializable]
 public class ItemSettingData
@@ -2590,6 +2794,7 @@ public class ItemSettingData
 
     public Item[] items = new Item[25];
     public List<Item> Inventory = new List<Item>();
+    public PlusStat plusStat = new PlusStat();
     /*
     public Item m_Ring4;        0
     public Item m_Ring3;        1
@@ -2635,18 +2840,6 @@ public class ItemSettingData
         for(int i =0; i< items.Length; i++)
         {
             items[i] = _items[i];
-        }
-    }
-
-    public void SetItem(Item item)
-    {
-        switch (item.type)
-        {
-            case ItemType.Ring:
-                break;
-
-            default:
-                break;
         }
     }
 }
@@ -2739,13 +2932,15 @@ public class Item
      */
     public OptionGrade upPotentialGrade, downPotentialGrade;
     public bool upPotentialPossible = true, downPotentialPossible = true;
-    public string upPotential1 = "", upPotential2 = "", upPotential3 = "";
-    public string downPotential1 = "", downPotential2 = "", downPotential3 = "";
-    public int upPotentialN1 = 0, upPotentialN2 = 0, upPotentialN3 = 0;
-    public int downPotentialN1 = 0, downPotentialN2 = 0, downPotentialN3 = 0;
+
+    public Potential[] upPotential = new Potential[3];
+    public Potential[] downPotential = new Potential[3];
+
+    public int[] upPotentialN = new int[3] { 0, 0, 0 };
+    public int[] downPotentialN = new int[3] { 0, 0, 0 };
     public string soul = "";
-    public string soulOption = "";
-    public string exceptionalOption = "";
+    public Potential soulOption = null;
+    public List<Potential> exceptionalOption = new List<Potential>();
     public SetName setName = SetName.NULL;
     public bool isAdditionalOption = true;
     public bool isBasicGrowth = false;
@@ -2755,8 +2950,9 @@ public class Item
     public bool isNormalAdditional = false;
     public bool isSuperior = false;
     public bool isLucky = false;
-
+    public bool isGenesis = false;
     public int starforce;
+    public WeaponType weaponType = WeaponType.None;
 
     public Item()
     {
@@ -2993,6 +3189,45 @@ public enum ItemType : sbyte
     SubWeapon2
 }
 
+public enum WeaponType : byte
+{
+    None = 0,
+    OnehandedSword,
+    OnehandedAxe,
+    OneHandedMaces,
+    Staff,
+    Wand,
+    ShiningRod,
+    Dagger,
+    Cane,
+    Desperado,
+    WhipBlade,
+    SoulShooter,
+    ESPLimiter,
+    Chain,
+    LucentGauntlet,
+    RitualFan,
+    Bladecaster,
+    Whispershot,
+    TwohandedSword,
+    TwoHandedAxe,
+    TwoHandedBluntWeapon,
+    Spear,
+    Polearm,
+    Longsword,
+    HeavySword, // 라피스는 보조무기!
+    ArmCannon,
+    Bow,
+    Crossbow,
+    DualBowguns,
+    AncientBow,
+    Claw,
+    Chakram,
+    Gun,
+    Knuckle,
+    HandCannon
+}
+
 public enum Exchange : byte
 {
     FreeX = 0,
@@ -3001,7 +3236,7 @@ public enum Exchange : byte
     XX = 3
 }
 
-public enum OptionGrade
+public enum OptionGrade : byte
 {
     None = 0,
     Rare,
@@ -3029,7 +3264,12 @@ public enum PotentialOption : byte
     BossATK,
     CooldownReduction,
     MesoAcquiredRate,
-    ItemDropRate
+    ItemDropRate,
+    STR9,
+    DEX9,
+    INT9,
+    LUK9,
+    ETC
 }
 
 public enum PP : byte
@@ -3046,6 +3286,112 @@ public class Potential
     public PP percentOrPlus;
 
     public Potential() { }
+
+    public Potential(string str)
+    {
+        string[] words = str.Split(':');
+        
+        if(words.Length == 1)
+        {
+            if (str == "잠재능력이 봉인되어 있습니다.")
+            {
+                return;
+            }
+            potentialOption = PotentialOption.ETC;
+        }
+        else if(words.Length == 2)
+        {
+            switch (words[0])
+            {
+                case "":
+                    potentialOption = PotentialOption.None;
+                    return;
+                case "STR ":
+                    potentialOption = PotentialOption.STR;
+                    break;
+                case "DEX ":
+                    potentialOption = PotentialOption.DEX;
+                    break;
+                case "INT ":
+                    potentialOption = PotentialOption.INT;
+                    break;
+                case "LUK ":
+                    potentialOption = PotentialOption.LUK;
+                    break;
+                case "최대 HP ":
+                    potentialOption = PotentialOption.MaxHP;
+                    break;
+                case "최대 MP ":
+                    potentialOption = PotentialOption.MaxMP;
+                    break;
+                case "공격력 ":
+                    potentialOption = PotentialOption.ATK;
+                    break;
+                case "마력 ":
+                    potentialOption = PotentialOption.MAG;
+                    break;
+                case "크리티컬 확률 ":
+                    potentialOption = PotentialOption.CriticalPct;
+                    break;
+                case "크리티컬 데미지 ":
+                    potentialOption = PotentialOption.CriticalDamage;
+                    break;
+                case "데미지 ":
+                    potentialOption = PotentialOption.Damage;
+                    break;
+                case "올스탯 ":
+                    potentialOption = PotentialOption.AllStats;
+                    break;
+                case "몬스터 방어율 무시 ":
+                    potentialOption = PotentialOption.IgnoreDF;
+                    break;
+                case "보스 몬스터 공격 시 데미지 ":
+                    potentialOption = PotentialOption.BossATK;
+                    break;
+                case "모든 스킬의 재사용 대기시간 ":
+                    potentialOption = PotentialOption.CooldownReduction;
+                    percentOrPlus = PP.Plus;
+                    potentialValue = int.Parse(words[1].Substring(2, 1));
+                    return;
+                case "메소 획득량 ":
+                    potentialOption = PotentialOption.MesoAcquiredRate;
+                    break;
+                case "아이템 드롭률 ":
+                    potentialOption = PotentialOption.ItemDropRate;
+                    break;
+                case "캐릭터 기준 9레벨 당 STR ":
+                    potentialOption = PotentialOption.STR9;
+                    break;
+                case "캐릭터 기준 9레벨 당 DEX ":
+                    potentialOption = PotentialOption.DEX9;
+                    break;
+                case "캐릭터 기준 9레벨 당 INT ":
+                    potentialOption = PotentialOption.INT9;
+                    break;
+                case "캐릭터 기준 9레벨 당 LUK ":
+                    potentialOption = PotentialOption.LUK9;
+                    break;
+                default:
+                    potentialOption = PotentialOption.ETC;
+                    return;
+            }
+            if (words[1][words[1].Length - 1] == '%')
+            {
+                percentOrPlus = PP.Percent;
+                potentialValue = int.Parse(words[1].Substring(2, words[1].Length - 3));
+            }
+            else
+            {
+                percentOrPlus = PP.Plus;
+                potentialValue = int.Parse(words[1].Substring(2));
+            }
+        }
+        else
+        {
+            Debug.LogError("잠재능력 오류! : " + str);
+        }
+        
+    }
 
     public Potential(PotentialOption _potentialOption, int _potentialValue, PP _percentOrPlus)
     {
@@ -3101,6 +3447,20 @@ public class Potential
             case PotentialOption.ItemDropRate:
                 str += "아이템 드롭률 : +";
                 break;
+            case PotentialOption.STR9:
+                str += "캐릭터 기준 9레벨 당 STR : +";
+                break;
+            case PotentialOption.DEX9:
+                str += "캐릭터 기준 9레벨 당 DEX : +";
+                break;
+            case PotentialOption.INT9:
+                str += "캐릭터 기준 9레벨 당 INT : +";
+                break;
+            case PotentialOption.LUK9:
+                str += "캐릭터 기준 9레벨 당 LUK : +";
+                break;
+            default:
+                return "-잡옵-";
         }
         str += potentialValue.ToString();
         if (percentOrPlus == PP.Percent)

@@ -20,7 +20,7 @@ public class SetOptionManager : MonoBehaviour
 
     int[] luckyCheckOrder = { 9, 15, 7, 0, 1, 2, 3, 16 };
 
-    public void UIReset()
+    public void SetOptionUpdate()
     {
         var _items = itemSettingLogic.GetItemSettingData().items;
 
@@ -34,12 +34,12 @@ public class SetOptionManager : MonoBehaviour
 
         for (int i = 0; i < _items.Length; i++)
         {
-            if (_items[i].setName == SetName.NULL)//·°Å°ÅÛÀº??????
+            if (_items[i].setName == SetName.NULL)
                 continue;
 
             bool check = false;
 
-            for(int j = 0; j < setNameList.Count; j++)
+            for (int j = 0; j < setNameList.Count; j++)
             {
                 if (setNameList[j] == _items[i].setName)
                 {
@@ -51,7 +51,7 @@ public class SetOptionManager : MonoBehaviour
                 }
             }
 
-            if(check == false)
+            if (check == false)
             {
                 SetOptionObject _setOptionObj = Instantiate(setOptionPrefabs[(int)_items[i].setName], setOptionContent_Tr).GetComponent<SetOptionObject>();
                 _setOptionObj.SetItem(_items[i]);
@@ -62,11 +62,11 @@ public class SetOptionManager : MonoBehaviour
             }
         }
 
-        // ¾ÆÁ÷ ·°Å° ¾ÆÀÌÅÛÀº ¾ÈÇß¾î¿é!!
+
         // 4Ä«¶Ò>½ºÄ®·¿ ÀÌ¾î¸µ>½ºÄ®·¿=Á¦³×½Ã½º ¹«±â>½ºÄ®·¿ ¸µ>½ºÄ®·¿ °ßÀå
         bool luckyCheck = false;
 
-        for(int order = 0; order < luckyCheckOrder.Length; order++)
+        for (int order = 0; order < luckyCheckOrder.Length; order++)
         {
             int N = luckyCheckOrder[order];
             if (_items[N].isLucky == true)
@@ -88,6 +88,11 @@ public class SetOptionManager : MonoBehaviour
                 if (luckyCheck) break;
             }
         }
+    }
+
+    public void UIReset()
+    {
+        SetOptionUpdate();
 
 
         if (snObjList.Count > 0)
@@ -130,4 +135,6 @@ public class SetOptionManager : MonoBehaviour
         LayoutRebuilder.ForceRebuildLayoutImmediate(snObjList[curPage].GetComponent<RectTransform>());
 
     }
+
+    public List<SetOptionObject> GetsnObjList() { return snObjList; }
 }

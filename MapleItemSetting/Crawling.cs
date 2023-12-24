@@ -19,7 +19,7 @@ public class Crawling : MonoBehaviour
         // 오류 검사
         if (!response.IsSuccessStatusCode)
         {
-            Debug.Log($"서버에서 오류를 반환했습니다. 반환코드 = {response.StatusCode}");
+            Debug.LogError($"서버에서 오류를 반환했습니다. 반환코드 = {response.StatusCode}");
             return;
         }
 

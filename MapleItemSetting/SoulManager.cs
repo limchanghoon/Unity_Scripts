@@ -40,11 +40,11 @@ public class SoulManager : MonoBehaviour
             }
         }
 
-        if (curItem.soulOption != "")
+        if (curItem.soulOption != null)
         {
             for (int i = 0; i < soulOptionDropdown.options.Count; i++)
             {
-                if (curItem.soulOption == soulOptionDropdown.options[i].text)
+                if (curItem.soulOption.ToString() == soulOptionDropdown.options[i].text)
                 {
                     soulOptionDropdown.value = i;
                     break;
@@ -93,7 +93,7 @@ public class SoulManager : MonoBehaviour
         }
 
         curItem.soul += soulDropdown.options[soulDropdown.value].text;
-        curItem.soulOption = soulOptionDropdown.options[soulOptionDropdown.value].text;
+        curItem.soulOption = new Potential(soulOptionDropdown.options[soulOptionDropdown.value].text);
 
 
         fileManager.SaveIs(itemSettingLogic.GetItemSettingData(), itemSettingLogic.GetCurPath());

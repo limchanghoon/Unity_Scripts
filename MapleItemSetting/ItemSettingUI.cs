@@ -33,6 +33,12 @@ public class ItemSettingUI : MonoBehaviour
     public Image[] itemImages;
     public Transform inventoryTr;
 
+    public TextMeshProUGUI combatPowerText;
+    public Toggle rebootToggle;
+    public TMP_InputField level_text;
+    public TMP_InputField[] plusStat_texts;
+    public TMP_InputField criDamage_text;
+
     List<string> classOptionList = new List<string>();
 
     public void OnClassGroupValueChanged(TMP_Dropdown dropdown)
@@ -142,6 +148,22 @@ public class ItemSettingUI : MonoBehaviour
         itemSelectScrollbar.value = 1;
     }
 
+    public void OnNameFieldChanged(TMP_InputField inputField)
+    {
+        inputField.text = System.Text.RegularExpressions.Regex.Replace(inputField.text, @"[^0-9a-zA-Z∞°-∆R§°-§æ§ø-§”]", "");
+    }
+
+    public void OnLevelFieldEndEdit(TMP_InputField inputField)
+    {
+        int _LEVEL = int.Parse(inputField.text);
+        if (_LEVEL < 100)
+            _LEVEL = 100;
+        else if (_LEVEL > 300)
+            _LEVEL = 300;
+
+        inputField.text = _LEVEL.ToString();
+    }
+
     public void SetSettingName(string _settingName, string _settingClass)
     {
         settingNameInSettingCanvas.text = _settingName;
@@ -159,16 +181,14 @@ public class ItemSettingUI : MonoBehaviour
     {
         if (!trashCanPanel.activeSelf)
         {
-            trashCanPanel.SetActive(true);
-            BackStackManager.Instance.Push(trashCanPanel);
+            BackStackManager.Instance.PushAndSetTrue(trashCanPanel);
         }
     }
     public void TurnOffTrashCan()
     {
         if (trashCanPanel.activeSelf)
         {
-            BackStackManager.Instance.Pop();
-            trashCanPanel.SetActive(false);
+            BackStackManager.Instance.PopAndSetFalse();
         }
     }
 
@@ -176,11 +196,11 @@ public class ItemSettingUI : MonoBehaviour
     {
         if (trashCanPanel.activeSelf)
         {
-            BackStackManager.Instance.Pop();
-            trashCanPanel.SetActive(false);
+            BackStackManager.Instance.PopAndSetFalse();
+            //trashCanPanel.SetActive(false);
 
-            BackStackManager.Instance.Pop();
-            itemSettingCanvas.SetActive(false);
+            BackStackManager.Instance.PopAndSetFalse();
+            //itemSettingCanvas.SetActive(false);
 
             fileManager.DeleteCurFile(itemSettingLogic.GetCurPath());
         }
@@ -195,8 +215,7 @@ public class ItemSettingUI : MonoBehaviour
 
         itemSettingLogic.DisplayCertainItem((CharacterClassGroup)itemClassGroupDropdown.value, itemListTr);
 
-        itemSelectCanvas.SetActive(true);
-        BackStackManager.Instance.Push(itemSelectCanvas);
+        BackStackManager.Instance.PushAndSetTrue(itemSelectCanvas);
     }
 
     public void TurnOffSelectWindow()
@@ -204,8 +223,7 @@ public class ItemSettingUI : MonoBehaviour
         itemSelectScrollbar.value = 1;
         if (itemSelectCanvas.activeSelf)
         {
-            BackStackManager.Instance.Pop();
-            itemSelectCanvas.SetActive(false);
+            BackStackManager.Instance.PopAndSetFalse();
         }
     }
 
@@ -213,8 +231,7 @@ public class ItemSettingUI : MonoBehaviour
     {
         if (!createCanvas.activeSelf)
         {
-            createCanvas.SetActive(true);
-            BackStackManager.Instance.Push(createCanvas);
+            BackStackManager.Instance.PushAndSetTrue(createCanvas);
         }
     }
 
@@ -222,27 +239,16 @@ public class ItemSettingUI : MonoBehaviour
     {
         if (createCanvas.activeSelf)
         {
-            BackStackManager.Instance.Pop();
-            createCanvas.SetActive(false);
+            BackStackManager.Instance.PopAndSetFalse();
         }
     }
 
-    public void TurnOnItemSetting()
-    {
-        if (!itemSettingCanvas.activeSelf)
-        {
-            itemSettingCanvas.SetActive(true);
-            BackStackManager.Instance.Push(itemSettingCanvas);
-        }
-    }   
     
     public void TurnOnItemSetting(ItemSettingData _itemSettingData, string _path)
     {
-        Debug.Log(_itemSettingData.settingName);
         if (!itemSettingCanvas.activeSelf)
         {
-            itemSettingCanvas.SetActive(true);
-            BackStackManager.Instance.Push(itemSettingCanvas);
+            BackStackManager.Instance.PushAndSetTrue(itemSettingCanvas);
         }
         itemSettingLogic.SetItems(_itemSettingData, itemImages, inventoryTr, _path);
     }
@@ -251,8 +257,7 @@ public class ItemSettingUI : MonoBehaviour
     {
         if (itemSettingCanvas.activeSelf)
         {
-            BackStackManager.Instance.Pop();
-            itemSettingCanvas.SetActive(false);
+            BackStackManager.Instance.PopAndSetFalse();
         }
     }
 
@@ -260,8 +265,7 @@ public class ItemSettingUI : MonoBehaviour
     {
         if (!typeSelectCanvas.activeSelf)
         {
-            typeSelectCanvas.SetActive(true);
-            BackStackManager.Instance.Push(typeSelectCanvas);
+            BackStackManager.Instance.PushAndSetTrue(typeSelectCanvas);
         }
     }
 
@@ -270,8 +274,7 @@ public class ItemSettingUI : MonoBehaviour
     {
         if (typeSelectCanvas.activeSelf)
         {
-            BackStackManager.Instance.Pop();
-            typeSelectCanvas.SetActive(false);
+            BackStackManager.Instance.PopAndSetFalse();
         }
     }
 
@@ -280,8 +283,7 @@ public class ItemSettingUI : MonoBehaviour
         if (index >= itemSettingLogic.GetItemSettingData().Inventory.Count)
             return;
 
-        itemSelectInfoPanel.SetActive(true);
-        BackStackManager.Instance.Push(itemSelectInfoPanel);
+        BackStackManager.Instance.PushAndSetTrue(itemSelectInfoPanel);
 
         var _type = itemSettingLogic.GetItemSettingData().Inventory[index].type;
 
@@ -293,8 +295,7 @@ public class ItemSettingUI : MonoBehaviour
     {
         if (itemSelectInfoPanel.activeSelf)
         {
-            BackStackManager.Instance.Pop();
-            itemSelectInfoPanel.SetActive(false);
+            BackStackManager.Instance.PopAndSetFalse();
         }
     }
 
@@ -302,8 +303,7 @@ public class ItemSettingUI : MonoBehaviour
     {
         if (!setOptionCanvas.activeSelf)
         {
-            setOptionCanvas.SetActive(true);
-            BackStackManager.Instance.Push(setOptionCanvas);
+            BackStackManager.Instance.PushAndSetTrue(setOptionCanvas);
 
             setOptionCanvas.GetComponent<SetOptionManager>().UIReset();
         }
@@ -313,8 +313,7 @@ public class ItemSettingUI : MonoBehaviour
     {
         if (setOptionCanvas.activeSelf)
         {
-            BackStackManager.Instance.Pop();
-            setOptionCanvas.SetActive(false);
+            BackStackManager.Instance.PopAndSetFalse();
         }
     }
 
@@ -330,14 +329,12 @@ public class ItemSettingUI : MonoBehaviour
 
             itemSettingLogic.DisplayCertainItem((CharacterClassGroup)itemClassGroupDropdown.value, itemListTr);
 
-            itemSelectCanvas.SetActive(true);
-            BackStackManager.Instance.Push(itemSelectCanvas);
+            BackStackManager.Instance.PushAndSetTrue(itemSelectCanvas);
         }
         else
         {
             // ¿Â¬¯¡ﬂ¿Œ ¿Â∫Ò ¡§∫∏
-            itemSelectInfoPanel.SetActive(true);
-            BackStackManager.Instance.Push(itemSelectInfoPanel);
+            BackStackManager.Instance.PushAndSetTrue(itemSelectInfoPanel);
 
             var _type = itemSettingLogic.GetItemSettingData().items[idx].type;
 
@@ -345,7 +342,52 @@ public class ItemSettingUI : MonoBehaviour
         }
     }
 
+    public void SetPlusStatTexts()
+    {
+        var myPlusStat = itemSettingLogic.GetItemSettingData().plusStat;
+        rebootToggle.isOn = myPlusStat.isReboot;
+        level_text.text = myPlusStat.Level.ToString();
 
+        for (int i = 0; i < plusStat_texts.Length; ++i)
+            plusStat_texts[i].text = myPlusStat.stats[i].ToString();
+
+        criDamage_text.text = myPlusStat.criDamage.ToString();
+    }
+
+    public void SetPlusStats()
+    {
+        var myPlusStat = itemSettingLogic.GetItemSettingData().plusStat;
+        myPlusStat.isReboot = rebootToggle.isOn;
+        if (level_text.text == string.Empty)
+            myPlusStat.Level = 260;
+        else
+            myPlusStat.Level = int.Parse(level_text.text);
+
+
+        for (int i = 0; i < plusStat_texts.Length; ++i)
+        {
+            if (plusStat_texts[i].text == string.Empty)
+                myPlusStat.stats[i] = 0;
+            else
+                myPlusStat.stats[i] = int.Parse(plusStat_texts[i].text);
+        }
+
+        if (criDamage_text.text == string.Empty)
+            myPlusStat.criDamage = 0f;
+        else
+            myPlusStat.criDamage = float.Parse(criDamage_text.text);
+
+        fileManager.SaveIs(itemSettingLogic.GetItemSettingData(), itemSettingLogic.GetCurPath());
+        PopUpManager.Instance.GeneratePopUp("∑π∫ß π◊ √ﬂ∞° Ω∫≈»¿Ã ¿˚øÎµ«æ˙Ω¿¥œ¥Ÿ.");
+    }
+
+
+    // ¿œ¥‹ ¡¶≥Ì, µ•∫•¡Æ, ¡¶∑Œ(«—π¯ »Æ¿Œ ¿€æ˜ « ø‰«‘) ¡¶ø‹
+    public void ShowCombatPower()
+    {
+        Debug.Log("¿¸≈ı∑¬ √º≈©!");
+        combatPowerText.text = itemSettingLogic.GetCombatPower();
+    }
 
     public void CreateNewItemSetting()
     {
@@ -355,10 +397,16 @@ public class ItemSettingUI : MonoBehaviour
             return;
         }
 
+        if(settingName.text == string.Empty)
+        {
+            PopUpManager.Instance.GeneratePopUp("¿Ã∏ß¿ª ¿‘∑¬«œΩ√ø¿");
+            return;
+        }
+
         ItemSettingData itemSettingData = new ItemSettingData(settingName.text
             , (CharacterClassGroup)classGroupDropdown.value, (CharacterClass)(1000 * classGroupDropdown.value + classDropdown.value));
-        fileManager.CreateISToJson(itemSettingData);
-        TurnOffCreateWindow();
+        if(fileManager.CreateISToJson(itemSettingData))
+            TurnOffCreateWindow();
     }
     #endregion
 }

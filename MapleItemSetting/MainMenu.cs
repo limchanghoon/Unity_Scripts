@@ -16,14 +16,12 @@ public class MainMenu : MonoBehaviour
 
     public void TurnOnExitBox()
     {
-        exitPanel.SetActive(true);
-        BackStackManager.Instance.Push(exitPanel);
+        BackStackManager.Instance.PushAndSetTrue(exitPanel);
     }
 
     public void TurnOffExitBox()
     {
-        BackStackManager.Instance.Pop();
-        exitPanel.SetActive(false);
+        BackStackManager.Instance.PopAndSetFalse();
     }
 
     public void ExitGame()

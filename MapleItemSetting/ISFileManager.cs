@@ -7,56 +7,47 @@ using UnityEngine;
 
 public class ISFileManager : MonoBehaviour
 {
+    public ItemSettingUI itemSettingUI;
     public GameObject settingButtonPrefab;
     public Transform contentTr;
 
-    public List<string> files = new List<string>();
+    public Dictionary<string, GameObject> settingMap = new Dictionary<string, GameObject>();
 
     private void Awake()
     {
-        files.AddRange(LoadIsList());
+        LoadItemSettingsFromFile();
     }
 
-    void ReLoadIsList()
+    public bool CreateISToJson(ItemSettingData _itemSettingData)
     {
-        files.Clear();
-        foreach(Transform tr in contentTr)
-        {
-            Destroy(tr.gameObject);
-        }
-        files.AddRange(LoadIsList());
-    }
-
-    public void CreateISToJson(ItemSettingData _itemSettingData)
-    {
-        
         string path = Path.Combine(Application.persistentDataPath, "ITemSettingFiles");
         if (!Directory.Exists(path))
             Directory.CreateDirectory(path);
-        
 
-        for(int i = 100000; i < 999999; i++)
+        string settingName = _itemSettingData.settingName;
+        if (settingName.Length == 1 && settingName[0] == 8203)
         {
-            string _path = Path.Combine(path, i.ToString() + ".json");
-            if (!File.Exists(_path))
-            {
-                if (_itemSettingData.settingName.Length == 1 && _itemSettingData.settingName[0] == 8203)
-                    _itemSettingData.settingName = _itemSettingData.charaacterClass.ToString();
-                
-                string jsonData = JsonUtility.ToJson(_itemSettingData, true);
-                File.WriteAllText(_path, jsonData);
-                Debug.Log("CreateISToJson 성공");
+            PopUpManager.Instance.GeneratePopUp("템셋팅 이름을 입력하시오.");
+            return false;
+        }    
 
-                GameObject _go = Instantiate(settingButtonPrefab, contentTr);
-                var itemSettingObj = _go.GetComponent<ItemSettingObject>();
-                itemSettingObj.SetItemSettingData(_itemSettingData, _path);
-
-                files.Add(_path);
-
-                return;
-            }
+        string _path = Path.Combine(path, settingName + ".json");
+        if(File.Exists(_path))
+        {
+            PopUpManager.Instance.GeneratePopUp("중복된 이름의 템셋팅이 존재합니다!");
+            return false;
         }
-        Debug.Log("CreateISToJson 실패");
+
+        string jsonData = JsonUtility.ToJson(_itemSettingData, true);
+        File.WriteAllText(_path, jsonData);
+        Debug.Log("CreateISToJson 성공");
+
+        GameObject _go = Instantiate(settingButtonPrefab, contentTr);
+        var itemSettingObj = _go.GetComponent<ItemSettingObject>();
+        itemSettingObj.SetItemSettingData(_path, _itemSettingData);
+
+        settingMap.Add(_path, _go);
+        return true;
     }
 
     public void SaveIs(ItemSettingData _itemSettingData, string _path)
@@ -64,15 +55,18 @@ public class ISFileManager : MonoBehaviour
         string jsonData = JsonUtility.ToJson(_itemSettingData, true);
         File.WriteAllText(_path, jsonData);
         Debug.Log("SaveIs 성공");
+        itemSettingUI.ShowCombatPower();
     }
 
     public void DeleteCurFile(string _path)
     {
         File.Delete(_path);
-        ReLoadIsList();
+        Destroy(settingMap[_path]);
+        settingMap.Remove(_path);
     }
 
-    public string[] LoadIsList()
+
+    public string[] LoadItemSettingsFromFile()
     {
         string path = Path.Combine(Application.persistentDataPath, "ITemSettingFiles");
         if (!Directory.Exists(path))
@@ -84,13 +78,30 @@ public class ISFileManager : MonoBehaviour
         {
             string jsonData = File.ReadAllText(f);
 
-            GameObject _go = Instantiate(settingButtonPrefab, contentTr);
             ItemSettingData _itemSettingDataForJson = JsonUtility.FromJson<ItemSettingData>(jsonData);
+
+            if(f != Path.Combine(path, _itemSettingDataForJson.settingName + ".json"))
+            {
+                File.Delete(f);
+                continue;
+            }
+
+            GameObject _go = Instantiate(settingButtonPrefab, contentTr);
             var itemSettingObj = _go.GetComponent<ItemSettingObject>();
-            itemSettingObj.SetItemSettingData(_itemSettingDataForJson, f);
+            itemSettingObj.SetItemSettingData(f, _itemSettingDataForJson);
+
+            settingMap.Add(f, _go);
         }
 
         return _files;
+    }
+
+    public ItemSettingData GetItemSettingData(string _path)
+    {
+        string jsonData = File.ReadAllText(_path);
+        ItemSettingData _itemSettingDataForJson = JsonUtility.FromJson<ItemSettingData>(jsonData);
+
+        return _itemSettingDataForJson;
     }
 
     public List<string> GetUpPotentialList(OptionGrade _grade, ItemType _type, int _level, int slot)

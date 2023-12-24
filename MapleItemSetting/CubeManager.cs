@@ -70,9 +70,9 @@ public class CubeManager : MonoBehaviour
 
         if (curItem.upPotentialGrade == (OptionGrade)dropdown.value)
         {
-            upP_Dropdowns[1].value = curItem.upPotentialN1;
-            upP_Dropdowns[2].value = curItem.upPotentialN2;
-            upP_Dropdowns[3].value = curItem.upPotentialN3;
+            upP_Dropdowns[1].value = curItem.upPotentialN[0];
+            upP_Dropdowns[2].value = curItem.upPotentialN[1];
+            upP_Dropdowns[3].value = curItem.upPotentialN[2];
         }
     }
 
@@ -92,9 +92,9 @@ public class CubeManager : MonoBehaviour
 
         if (curItem.downPotentialGrade == (OptionGrade)dropdown.value)
         {
-            downP_Dropdowns[1].value = curItem.downPotentialN1;
-            downP_Dropdowns[2].value = curItem.downPotentialN2;
-            downP_Dropdowns[3].value = curItem.downPotentialN3;
+            downP_Dropdowns[1].value = curItem.downPotentialN[0];
+            downP_Dropdowns[2].value = curItem.downPotentialN[1];
+            downP_Dropdowns[3].value = curItem.downPotentialN[2];
         }
     }
 
@@ -106,24 +106,24 @@ public class CubeManager : MonoBehaviour
             if ((OptionGrade)upP_Dropdowns[0].value == OptionGrade.None)
             {
                 curItem.upPotentialGrade = OptionGrade.None;
-                curItem.upPotential1 = "";
-                curItem.upPotential2 = "";
-                curItem.upPotential3 = "";
+                curItem.upPotential[0] = null;
+                curItem.upPotential[1] = null;
+                curItem.upPotential[2] = null;
 
-                curItem.upPotentialN1 = 0;
-                curItem.upPotentialN2 = 0;
-                curItem.upPotentialN3 = 0;
+                curItem.upPotentialN[0] = 0;
+                curItem.upPotentialN[1] = 0;
+                curItem.upPotentialN[2] = 0;
             }
             else
             {
                 curItem.upPotentialGrade = (OptionGrade)upP_Dropdowns[0].value;
-                curItem.upPotential1 = upP_Dropdowns[1].options[upP_Dropdowns[1].value].text;
-                curItem.upPotential2 = upP_Dropdowns[2].options[upP_Dropdowns[2].value].text;
-                curItem.upPotential3 = upP_Dropdowns[3].options[upP_Dropdowns[3].value].text;
+                curItem.upPotential[0] = new Potential(upP_Dropdowns[1].options[upP_Dropdowns[1].value].text);
+                curItem.upPotential[1] = new Potential(upP_Dropdowns[2].options[upP_Dropdowns[2].value].text);
+                curItem.upPotential[2] = new Potential(upP_Dropdowns[3].options[upP_Dropdowns[3].value].text);
 
-                curItem.upPotentialN1 = upP_Dropdowns[1].value;
-                curItem.upPotentialN2 = upP_Dropdowns[2].value;
-                curItem.upPotentialN3 = upP_Dropdowns[3].value;
+                curItem.upPotentialN[0] = upP_Dropdowns[1].value;
+                curItem.upPotentialN[1] = upP_Dropdowns[2].value;
+                curItem.upPotentialN[2] = upP_Dropdowns[3].value;
             }
         }
 
@@ -132,24 +132,24 @@ public class CubeManager : MonoBehaviour
             if ((OptionGrade)downP_Dropdowns[0].value == OptionGrade.None)
             {
                 curItem.downPotentialGrade = OptionGrade.None;
-                curItem.downPotential1 = "";
-                curItem.downPotential2 = "";
-                curItem.downPotential3 = "";
+                curItem.downPotential[0] = null;
+                curItem.downPotential[1] = null;
+                curItem.downPotential[2] = null;
 
-                curItem.downPotentialN1 = 0;
-                curItem.downPotentialN2 = 0;
-                curItem.downPotentialN3 = 0;
+                curItem.downPotentialN[0] = 0;
+                curItem.downPotentialN[1] = 0;
+                curItem.downPotentialN[2] = 0;
             }
             else
             {
                 curItem.downPotentialGrade = (OptionGrade)downP_Dropdowns[0].value;
-                curItem.downPotential1 = downP_Dropdowns[1].options[downP_Dropdowns[1].value].text;
-                curItem.downPotential2 = downP_Dropdowns[2].options[downP_Dropdowns[2].value].text;
-                curItem.downPotential3 = downP_Dropdowns[3].options[downP_Dropdowns[3].value].text;
+                curItem.downPotential[0] = new Potential(downP_Dropdowns[1].options[downP_Dropdowns[1].value].text);
+                curItem.downPotential[1] = new Potential(downP_Dropdowns[2].options[downP_Dropdowns[2].value].text);
+                curItem.downPotential[2] = new Potential(downP_Dropdowns[3].options[downP_Dropdowns[3].value].text);
 
-                curItem.downPotentialN1 = downP_Dropdowns[1].value;
-                curItem.downPotentialN2 = downP_Dropdowns[2].value;
-                curItem.downPotentialN3 = downP_Dropdowns[3].value;
+                curItem.downPotentialN[0] = downP_Dropdowns[1].value;
+                curItem.downPotentialN[1] = downP_Dropdowns[2].value;
+                curItem.downPotentialN[2] = downP_Dropdowns[3].value;
             }
         }
 
