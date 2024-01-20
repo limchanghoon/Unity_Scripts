@@ -4,32 +4,25 @@ using UnityEngine;
 
 public class MerchantNPC : MonoBehaviour, IInteract
 {
-    public GameObject daiso_UI;
+    public GameObject shop_UI;
     public void Interact()
     {
-        if (daiso_UI.activeSelf)
+        if (shop_UI.activeSelf)
             return;
-        Debug.Log("Daiso Interaction!");
-        daiso_UI.SetActive(true);
-        daiso_UI.GetComponent<Canvas>().sortingOrder = ETC_Memory.Instance.top_orderLayer++;
+        Debug.Log("MerchantNPC Interaction!");
+        shop_UI.SetActive(true);
+        shop_UI.GetComponent<Canvas>().sortingOrder = ETC_Memory.Instance.top_orderLayer++;
         ETC_Memory.Instance.windowDepth++;
     }
 
     public void Close_UI()
     {
-        daiso_UI.SetActive(false);
+        shop_UI.SetActive(false);
         ETC_Memory.Instance.windowDepth--;
     }
 
     public void BuyEquipment(EquipmentMerchandise equipmentMerchandise)
     {
-        if(equipmentMerchandise.equipment_ItemData.part == 0)
-        {
-            CFirebase.Instance.GetWeapon((Weapon_ItemData)equipmentMerchandise.equipment_ItemData);
-        }
-        else
-        {
-            CFirebase.Instance.GetArmor((Armor_ItemData)equipmentMerchandise.equipment_ItemData);
-        }
+        CFirebase.Instance.GetItem(equipmentMerchandise.equipment_ItemData);
     }
 }

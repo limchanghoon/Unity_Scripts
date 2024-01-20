@@ -61,7 +61,7 @@ public class KeyboardResponse : MonoBehaviour
             {
                 ETC_Memory.Instance.windowDepth++;
                 EquipmentWindowController.Instance.canvas.sortingOrder = ETC_Memory.Instance.top_orderLayer++;
-                CFirebase.Instance.ReadWearingEquipment();
+                //CFirebase.Instance.ReadWearingEquipment();
                 EquipmentWindowController.Instance.canvas.enabled = true;
             }
             else

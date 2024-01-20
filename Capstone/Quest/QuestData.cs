@@ -68,7 +68,7 @@ public class QuestData : Observer
         {
             for (int i = 0; i < materials_id.Length; i++)
             {
-                if (ItemMaster.Instance.etcItem_Dic[materials_id[i]].itemName == name)
+                if (ItemMaster.item_Dic[materials_id[i]].itemName == name)
                 {
                     if (QuestController.Instance.canvas.enabled && QuestController.Instance.questListParent.currentQuest == this)
                         UpdateCurQuestDialog();
@@ -90,26 +90,10 @@ public class QuestData : Observer
         for (int i = 0; i < materials_id.Length; i++)
         {
 
-            if (materials_id[i] < 100000)  // 장비
-            {
-                if (materials_id[i] < 10000) // 무기
-                    QuestController.Instance.questListParent.materials_list.GetChild(i)
-                        .GetComponent<Quest_Material_MonoBehaviour>().SetEquiment(
-                            ItemMaster.Instance.weapon_Dic[materials_id[i]]
-                            , material_counts[i]);
-                else                                        // 방어구
-                    QuestController.Instance.questListParent.materials_list.GetChild(i)
-                        .GetComponent<Quest_Material_MonoBehaviour>().SetEquiment(
-                            ItemMaster.Instance.armor_Dic[materials_id[i]]
-                            , material_counts[i]);
-            }
-            else  // 기타
-            {
-                QuestController.Instance.questListParent.materials_list.GetChild(i)
-                    .GetComponent<Quest_Material_MonoBehaviour>().SetETC(
-                        ItemMaster.Instance.etcItem_Dic[materials_id[i]]
-                        , material_counts[i]);
-            }
+            QuestController.Instance.questListParent.materials_list.GetChild(i)
+                .GetComponent<Quest_Material_MonoBehaviour>().SetItem(
+                    ItemMaster.item_Dic[materials_id[i]]
+                    , material_counts[i]);
         }
 
     }

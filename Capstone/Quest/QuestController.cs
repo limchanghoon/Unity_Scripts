@@ -289,7 +289,7 @@ public class QuestController : MonoBehaviour
 
         for (int i = 0; i < questListParent.currentQuest.materials_id.Length; i++)
         {
-            if (InventoryController.Instance.Find_Count_From_Name(ItemMaster.Instance.etcItem_Dic[questListParent.currentQuest.materials_id[i]].itemName)
+            if (InventoryController.Instance.Find_Count_From_Name(ItemMaster.item_Dic[questListParent.currentQuest.materials_id[i]].itemName)
                 < questListParent.currentQuest.material_counts[i])
                 return false;
         }

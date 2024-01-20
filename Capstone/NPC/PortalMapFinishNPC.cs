@@ -23,7 +23,7 @@ public class PortalMapFinishNPC : MonoBehaviour,IInteract
 
     double finalTimer = -1f;
 
-    [ContextMenu("끝났어~")]
+    [ContextMenu("Finish")]
     public void Interact()
     {
         GM.ui_camera.transform.parent = null;
@@ -54,8 +54,6 @@ public class PortalMapFinishNPC : MonoBehaviour,IInteract
             canvasGroup.alpha = t;
         }
         canvasGroup.alpha = 1f;
-
-        // 몇초 뒤에 버튼 활성화???
     }
 
 

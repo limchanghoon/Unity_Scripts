@@ -43,23 +43,9 @@ public class QuestData_MonoBehaviour : MonoBehaviour
         {
             var material_obj = Instantiate(Resources.Load("Quest_Material_Block"), materials_list);
 
-            if (questData.materials_id[i] < 100000)  // 장비
-            {
-                if (questData.materials_id[i] < 10000) // 무기
-                    material_obj.GetComponent<Quest_Material_MonoBehaviour>().SetEquiment(
-                        ItemMaster.Instance.weapon_Dic[questData.materials_id[i]]
-                        , questData.material_counts[i]);
-                else                                        // 방어구
-                    material_obj.GetComponent<Quest_Material_MonoBehaviour>().SetEquiment(
-                        ItemMaster.Instance.armor_Dic[questData.materials_id[i]]
-                        , questData.material_counts[i]);
-            }
-            else  // 기타
-            {
-                material_obj.GetComponent<Quest_Material_MonoBehaviour>().SetETC(
-                    ItemMaster.Instance.etcItem_Dic[questData.materials_id[i]]
-                    , questData.material_counts[i]);
-            }
+            material_obj.GetComponent<Quest_Material_MonoBehaviour>().SetItem(
+                ItemMaster.item_Dic[questData.materials_id[i]]
+                , questData.material_counts[i]);
         }
 
 
@@ -67,23 +53,9 @@ public class QuestData_MonoBehaviour : MonoBehaviour
         {
             var reward_obj = Instantiate(Resources.Load("Quest_Reward_Block"), reward_list);
 
-            if (questData.reward_materials_id[i] < 100000)  // 장비
-            {
-                if (questData.reward_materials_id[i] < 10000) // 무기
-                    reward_obj.GetComponent<Quest_Reward_MonoBehaviour>().SetEquiment(
-                        ItemMaster.Instance.weapon_Dic[questData.reward_materials_id[i]]
-                        , questData.reward_material_counts[i]);
-                else                                        // 방어구
-                    reward_obj.GetComponent<Quest_Reward_MonoBehaviour>().SetEquiment(
-                        ItemMaster.Instance.armor_Dic[questData.reward_materials_id[i]]
-                        , questData.reward_material_counts[i]);
-            }
-            else  // 기타
-            {
-                reward_obj.GetComponent<Quest_Reward_MonoBehaviour>().SetETC(
-                    ItemMaster.Instance.etcItem_Dic[questData.reward_materials_id[i]]
-                    , questData.reward_material_counts[i]);
-            }
+            reward_obj.GetComponent<Quest_Reward_MonoBehaviour>().SetItem(
+                ItemMaster.item_Dic[questData.reward_materials_id[i]]
+                , questData.reward_material_counts[i]);
 
         }
 

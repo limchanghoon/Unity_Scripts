@@ -33,7 +33,7 @@ public class Field_Monster : Monster
         StopAllCoroutines();
         base.Die();
         isIdle = true;
-        CFirebase.Instance.GetItem(drop_item_Id, drop_item_count);
+        CFirebase.Instance.GetItem(new Other_ItemData(drop_item_Id,drop_item_count));
     }
 
     IEnumerator SetDestination()

@@ -46,6 +46,7 @@ public class Player_Info : MonoBehaviour
     }
     public int attack = 0;
     public int additionalHP = 0;
+    public GunType gunType = 0;
 
     private void Awake()
     {
@@ -63,7 +64,7 @@ public class Player_Info : MonoBehaviour
     [ContextMenu("장비 스텟 가져오기!")]
     public void UpdateStats()
     {
-        EquipmentWindowController.Instance.GetEquipmentStats(ref attack, ref additionalHP);
+        EquipmentWindowController.Instance.GetEquipmentStats(ref attack, ref additionalHP, ref gunType);
         GameObject.Find("GM").GetComponent<GameManager>().myPlayer.GetComponent<Player_HP>().UpdateHpBar();
         StatsWindowController.Instance.UpdateStats();
     }

@@ -122,7 +122,7 @@ public class AlarmController : MonoBehaviour
 
         for (int i = 0; i < _Quest.materials_id.Length; i++)
         {
-            string _name = ItemMaster.Instance.etcItem_Dic[_Quest.materials_id[i]].itemName;
+            string _name = ItemMaster.item_Dic[_Quest.materials_id[i]].itemName;
             txt += " " + _name + " " + _Quest.material_counts[i].ToString() + "°³ : " + InventoryController.Instance.Find_Count_From_Name(_name).ToString() + "/" + _Quest.material_counts[i].ToString() + "\n";
         }
 
@@ -159,7 +159,7 @@ public class AlarmController : MonoBehaviour
 
         for (int i = 0; i < _Quest.materials_id.Length; i++)
         {
-            string _name = ItemMaster.Instance.etcItem_Dic[_Quest.materials_id[i]].itemName;
+            string _name = ItemMaster.item_Dic[_Quest.materials_id[i]].itemName;
             txt += " " + _name + " " + _Quest.material_counts[i].ToString() + "°³ : " + InventoryController.Instance.Find_Count_From_Name(_name).ToString() + "/" + _Quest.material_counts[i].ToString() + "\n";
         }
 

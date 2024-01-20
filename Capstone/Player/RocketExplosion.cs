@@ -60,7 +60,15 @@ public class RocketExplosion : MonoBehaviour
             }
         }
 
-        int dmg = 10 * Player_Info.Instance.attack;
+        int dmg =  Player_Info.Instance.attack;
+        switch(Player_Info.Instance.gunType)
+        {
+            case GunType.Rifle:
+                dmg *= 10;
+                break;
+            case GunType.Sniper:
+                break;
+        }
 
         for(int i = 0; i < iHitList.Count; i++)
         {

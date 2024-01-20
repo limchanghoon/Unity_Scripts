@@ -8,12 +8,18 @@ using UnityEngine;
 
 using Random = UnityEngine.Random;
 
+public enum GunType : byte
+{
+    Rifle=0,
+    Sniper
+}
+
 public class Gun : MonoBehaviour
 {
-    public PhotonView pv;
+    [SerializeField] PhotonView pv;
 
     // 필요한 컴퍼넌트
-    [SerializeField] private Animator animator;
+    [SerializeField] Animator animator;
     [SerializeField] private Player_Move player_Move;
     public Transform fire_pos;
     [SerializeField] AudioSource audioSource;
@@ -28,6 +34,7 @@ public class Gun : MonoBehaviour
     [SerializeField] private TextMeshProUGUI bullet_text;
     [SerializeField] private Skill_Cooldown rocketCooldown;
 
+
     // 필요한 오브젝트
     public GameObject miniRocketPrefab;
     public GameObject portalBulletA;
@@ -35,9 +42,10 @@ public class Gun : MonoBehaviour
     GameObject[] hit_effects;
     public GameObject[] muzzleFlash_effects;
     GameObject[] bulletTrails;
-    [SerializeField] private GameObject Magazine_prefab;
     [SerializeField] private RectTransform[] crossHair;
+    [SerializeField] GameObject[] Magazine_prefabs;
     Transform center_TR;
+
 
     // 레이저 충돌 정보 받아옴.
     private RaycastHit hitInfo;
@@ -57,6 +65,7 @@ public class Gun : MonoBehaviour
     [SerializeField] private bool isQCoolDown;
 
     bool isZoomed = false;
+
 
     private void Start()
     {
@@ -131,6 +140,7 @@ public class Gun : MonoBehaviour
 
         if (Input.GetKeyDown(ETC_Memory.Instance.myOption.keyOption.GetKeyCode(KeySetting.RELOAD)) && remaining_Bullet_cnt > 0 && current_Bullet_cnt < magazine_size)
         {
+            animator.SetBool("Atk", false);
             isReload = true;
             if (pv)
                 pv.RPC("Reload_RPC", RpcTarget.All);
@@ -182,12 +192,18 @@ public class Gun : MonoBehaviour
 
                 return;
             }
-            animator.SetBool("Atk", true);
+            if (!animator.GetBool("Atk"))
+            {
+                animator.SetBool("Atk", true);
+            }
             animator.SetLayerWeight(1, 1);
         }
         else
         {
-            animator.SetBool("Atk", false);
+            if (animator.GetBool("Atk"))
+            {
+                animator.SetBool("Atk", false);
+            }
             animator.SetLayerWeight(1, 0);
         }
 
@@ -224,6 +240,8 @@ public class Gun : MonoBehaviour
         }
     }
 
+
+
     public void FinishReload()
     {
         int reloading_count = magazine_size - current_Bullet_cnt;
@@ -243,7 +261,7 @@ public class Gun : MonoBehaviour
         if (isDroped)
             return;
         isDroped = true;
-        GameObject droped_magazine = Instantiate(Magazine_prefab, magazine_transform.position, magazine_transform.rotation);
+        GameObject droped_magazine = Instantiate(Magazine_prefabs[(int)Player_Info.Instance.gunType], magazine_transform.position, magazine_transform.rotation);
         Destroy(droped_magazine, 10f);
     }
 
@@ -276,7 +294,6 @@ public class Gun : MonoBehaviour
         float recoil_v = isZoomed ? Random.Range(1f, 1.2f) : Random.Range(2f, 2.4f);
 
         player_Move.SetRecoil(recoil_right, recoil_h, recoil_v);
-        
     }
 
     private void UpdateBulletUI()

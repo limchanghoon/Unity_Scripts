@@ -11,7 +11,22 @@ public class Quest_Material_MonoBehaviour : MonoBehaviour
     [SerializeField] TextMeshProUGUI text;
     [SerializeField] ItemData_MonoBehaviour itemData_MonoBehaviour;
 
-    public void SetETC(ETC_ItemData _etc_item, int _count)
+    public void SetItem(ItemData itemData, int _count)
+    {
+        switch (itemData.type)
+        {
+            case ItemType.None:
+                break;
+            case ItemType.Other:
+                Set_OtherItem((Other_ItemData)itemData, _count);
+                break;
+            case ItemType.Equipment:
+                Set_EquipmentItem((Equipment_ItemData)itemData, _count);
+                break;
+        }
+    }
+
+    private void Set_OtherItem(Other_ItemData _etc_item, int _count)
     {
         itemData_MonoBehaviour.itemData = _etc_item;
 
@@ -21,12 +36,12 @@ public class Quest_Material_MonoBehaviour : MonoBehaviour
         text.text = " " + _etc_item.itemName + " " + _count.ToString() + "°³ : " + completed_cnt + "/" + _count.ToString();
     }
 
-    public void SetEquiment(Equipment_ItemData _equipment, int _count)
+    private void Set_EquipmentItem(Equipment_ItemData _equipment, int _count)
     {
         itemData_MonoBehaviour.itemData = _equipment;
 
         image.sprite = Resources.Load("Images/Items/" 
-            + InventoryController.part_names[_equipment.part] + "/"+ _equipment.itemName, typeof(Sprite)) as Sprite;
+            + _equipment.part.ToString() + "/"+ _equipment.itemName, typeof(Sprite)) as Sprite;
         var item = InventoryController.Instance.Find_Item(_equipment.itemName);
         string completed_cnt = item != null ? item.count.ToString() : "0";
         text.text = " " + _equipment.itemName + " " + _count.ToString() + "°³ : " + completed_cnt + "/" + _count.ToString();

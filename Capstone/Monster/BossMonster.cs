@@ -132,8 +132,8 @@ public class BossMonster : Monster
         RewardController rewardController = Instantiate(Resources.Load<RewardController>("RewardUI"));
         for (int i = 0; i < rewardIds.Count; i++)
         {
-            rewardController.AddReward(ItemMaster.Instance.etcItem_Dic[rewardIds[i]].itemName, rewardCounts[i]);
-            CFirebase.Instance.GetItem(rewardIds[i], rewardCounts[i]);
+            rewardController.AddReward(ItemMaster.item_Dic[rewardIds[i]].itemName, rewardCounts[i]);
+            CFirebase.Instance.GetItem(new Other_ItemData(rewardIds[i], rewardCounts[i]));
         }
     }
 }
