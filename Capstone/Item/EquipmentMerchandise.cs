@@ -11,7 +11,7 @@ public class EquipmentMerchandise : MonoBehaviour
 
     private void Start()
     {
-        equipment_ItemData = ItemMaster.Instance.GetEquipmentFrom_ID(m_Id);
+        equipment_ItemData = (Equipment_ItemData)ItemMaster.item_Dic[m_Id];
 
         ItemData_Mono.itemData = equipment_ItemData;
     }

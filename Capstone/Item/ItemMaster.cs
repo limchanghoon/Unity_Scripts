@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemMaster : MonoBehaviour
+public class ItemMaster// : MonoBehaviour
 {
+    /*
     private static ItemMaster instance;
 
     public static ItemMaster Instance
@@ -36,43 +37,48 @@ public class ItemMaster : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    */
 
-    public Dictionary<int, ETC_ItemData> etcItem_Dic = new Dictionary<int, ETC_ItemData>();
-    public Dictionary<int, Armor_ItemData> armor_Dic = new Dictionary<int, Armor_ItemData>();
-    public Dictionary<int, Weapon_ItemData> weapon_Dic = new Dictionary<int, Weapon_ItemData>();
+    public static Dictionary<int, ItemData> item_Dic = new Dictionary<int, ItemData>();
 
-    public Dictionary<int, string> itemDescriptionDic = new Dictionary<int, string>();
+    public static Dictionary<int, string> itemDescriptionDic = new Dictionary<int, string>();
 
-    void LoadDictionary()
+    static ItemMaster()
     {
-        etcItem_Dic.Add(100000, new ETC_ItemData(100000, "Stone_0", 0));
-        etcItem_Dic.Add(100001, new ETC_ItemData(100001, "Stone_1", 0));
-        etcItem_Dic.Add(100002, new ETC_ItemData(100002, "Stone_2", 0));
+        LoadDictionary();
+    }
+
+    static void LoadDictionary()
+    {
+        item_Dic.Add(100000, new Other_ItemData(100000, "Stone_0", 0));
+        item_Dic.Add(100001, new Other_ItemData(100001, "Stone_1", 0));
+        item_Dic.Add(100002, new Other_ItemData(100002, "Stone_2", 0));
 
 
 
-        armor_Dic.Add(10000, new Armor_ItemData("", 10000, "Necklace_1", 1, 0, 20));
-        armor_Dic.Add(10001, new Armor_ItemData("", 10001, "Necklace_2", 1, 0, 40));
+        item_Dic.Add(10000, new Armor_ItemData("", 10000, "Necklace_1", Equipment_Part.Pendant, 0, 20));
+        item_Dic.Add(10001, new Armor_ItemData("", 10001, "Necklace_2", Equipment_Part.Pendant, 0, 40));
 
 
-        armor_Dic.Add(20000, new Armor_ItemData("", 20000, "Gloves_1", 2, 0, 20));
-        armor_Dic.Add(20001, new Armor_ItemData("", 20001, "Gloves_2", 2, 0, 40));
+        item_Dic.Add(20000, new Armor_ItemData("", 20000, "Gloves_1", Equipment_Part.Gloves, 0, 20));
+        item_Dic.Add(20001, new Armor_ItemData("", 20001, "Gloves_2", Equipment_Part.Gloves, 0, 40));
 
 
-        armor_Dic.Add(30000, new Armor_ItemData("", 30000, "Helmet_1", 3, 0, 20));
-        armor_Dic.Add(30001, new Armor_ItemData("", 30001, "Helmet_2", 3, 0, 40));
+        item_Dic.Add(30000, new Armor_ItemData("", 30000, "Helmet_1", Equipment_Part.Helmet, 0, 20));
+        item_Dic.Add(30001, new Armor_ItemData("", 30001, "Helmet_2", Equipment_Part.Helmet, 0, 40));
 
 
-        armor_Dic.Add(40000, new Armor_ItemData("", 40000, "BodyArmor_1", 4, 0, 20));
-        armor_Dic.Add(40001, new Armor_ItemData("", 40001, "BodyArmor_2", 4, 0, 40));
+        item_Dic.Add(40000, new Armor_ItemData("", 40000, "BodyArmor_1", Equipment_Part.Breastplate, 0, 20));
+        item_Dic.Add(40001, new Armor_ItemData("", 40001, "BodyArmor_2", Equipment_Part.Breastplate, 0, 40));
 
 
-        armor_Dic.Add(50000, new Armor_ItemData("", 50000, "Boots_1", 5, 0, 20));
-        armor_Dic.Add(50001, new Armor_ItemData("", 50001, "Boots_2", 5, 0, 40));
+        item_Dic.Add(50000, new Armor_ItemData("", 50000, "Boots_1", Equipment_Part.Boots, 0, 20));
+        item_Dic.Add(50001, new Armor_ItemData("", 50001, "Boots_2", Equipment_Part.Boots, 0, 40));
 
 
-        weapon_Dic.Add(0, new Weapon_ItemData("", 0, "M16", 0, 0, 10));
-        weapon_Dic.Add(100, new Weapon_ItemData("", 100, "AK-47", 0, 0, 30));
+        item_Dic.Add(0, new Weapon_ItemData("", 0, "M16", Equipment_Part.Gun, GunType.Rifle, 0, 10));
+        item_Dic.Add(100, new Weapon_ItemData("", 100, "AK-47", Equipment_Part.Gun, GunType.Rifle, 0, 30));
+        item_Dic.Add(200, new Weapon_ItemData("", 200, "M24", Equipment_Part.Gun, GunType.Sniper, 0, 100));
 
 
 
@@ -109,22 +115,6 @@ public class ItemMaster : MonoBehaviour
 
         itemDescriptionDic.Add(0, "5.56mm 돌격소총으로 경량에 우수한 성능을 보여주는 명기이다.");
         itemDescriptionDic.Add(100, "7.62mm 돌격소총으로 우수한 저지력을 자랑한다. 또한 견고함과 높은 신뢰성으로 높이 평가된다.");
-    }
-
-    public int GetPartOfEquipment(int _id)
-    {
-        return _id / 10000;
-    }
-
-    public Equipment_ItemData GetEquipmentFrom_ID(int _id)
-    {
-        if (_id < 10000)
-        {
-            return Instance.weapon_Dic[_id];
-        }
-        else
-        {
-            return Instance.armor_Dic[_id];
-        }
+        itemDescriptionDic.Add(200, "7.62mm M24 저격용화기체제 소총으로 미군의 제식 저격소총이다.");
     }
 }

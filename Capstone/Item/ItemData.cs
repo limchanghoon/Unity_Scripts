@@ -6,7 +6,7 @@ public class ItemData
 {
     public int id;
     public string itemName;
-    public char type;
+    public ItemType type;
     public string description;
 
 
@@ -14,25 +14,14 @@ public class ItemData
     {
         id = -1;
         itemName = "-";
-        type = '-';
+        type = ItemType.None;
     }
-    /*
-    public ItemData(char _type , string _itemName)
-    {
-        Set(_type, _itemName);
-    }
+}
 
-    public void Set(char _type, string _itemName)
-    {
-        type = _type;
-        itemName = _itemName;
-    }
-
-    public void Set(ItemData _itemData)
-    {
-        type = _itemData.type;
-        itemName = _itemData.itemName;
-    }
-    */
+public enum ItemType : byte
+{
+    None=0,
+    Other,
+    Equipment
 }
 
