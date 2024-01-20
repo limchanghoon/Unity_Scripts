@@ -16,7 +16,6 @@ public class EquipmentWindowController : MonoBehaviour
     public Canvas canvas;
     public Sprite[] backs;
 
-
     private static EquipmentWindowController instance;
 
     public static EquipmentWindowController Instance
@@ -68,6 +67,7 @@ public class EquipmentWindowController : MonoBehaviour
 
     public void Update_Equipment_Window()
     {
+
         for (int i = 0; i < cells.Length; i++)
         {
             if (equipments[i] == null)
@@ -78,7 +78,7 @@ public class EquipmentWindowController : MonoBehaviour
             }
             else
             {
-                string path = "Images/Items/" + InventoryController.part_names[equipments[i].part] + "/" + equipments[i].itemName;
+                string path = "Images/Items/" + equipments[i].part.ToString() + "/" + equipments[i].itemName;
 
                 cells[i].sprite = Resources.Load(path, typeof(Sprite)) as Sprite;
                 cells[i].transform.GetComponentInChildren<TextMeshProUGUI>().text = "+ " + equipments[i].level.ToString();
@@ -99,7 +99,7 @@ public class EquipmentWindowController : MonoBehaviour
         canvas.enabled = false;
     }
 
-    public void GetEquipmentStats(ref int attack, ref int defense)
+    public void GetEquipmentStats(ref int attack, ref int defense, ref GunType gunType)
     {
         attack = 0;
         defense = 0;
@@ -107,15 +107,14 @@ public class EquipmentWindowController : MonoBehaviour
         {
             if (equipment == null)
                 continue;
-            if(equipment.part == 0)
+            if(equipment.part == Equipment_Part.Gun)
             {
                 attack += ((Weapon_ItemData)equipment).attack;
-                //Debug.Log("Attack : " + ((Weapon_ItemData)equipment).attack);
+                gunType = ((Weapon_ItemData)equipment).gunType;
             }
             else
             {
                 defense += ((Armor_ItemData)equipment).defense;
-                //Debug.Log("Defense : " + ((Armor_ItemData)equipment).defense);
             }
         }
     }

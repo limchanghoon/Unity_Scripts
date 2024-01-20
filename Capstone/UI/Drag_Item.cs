@@ -28,9 +28,10 @@ public class Drag_Item : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoin
         itemData_MonoBehaviour = GetComponent<ItemData_MonoBehaviour>();
     }
 
+    // 드래그 시작
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (itemData_MonoBehaviour.itemData.type == '-')
+        if (itemData_MonoBehaviour.itemData.type == ItemType.None)
             return;
         if (eventData.button == PointerEventData.InputButton.Left)
         {
@@ -41,26 +42,27 @@ public class Drag_Item : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoin
         }
     }
 
+    // 드래그 중
     public void OnDrag(PointerEventData eventData)
     {
-        if (itemData_MonoBehaviour.itemData.type == '-' || !isDragging)
+        if (itemData_MonoBehaviour.itemData.type == ItemType.None || !isDragging)
             return;
         Vector2 offset = eventData.position - downPosition;
         downPosition = eventData.position;
 
         window.anchoredPosition += offset / canvas.scaleFactor;
-        //window.anchoredPosition += eventData.delta;
     }
 
+    // 드래그 끝
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (itemData_MonoBehaviour.itemData.type == '-' || !isDragging)
+        if (itemData_MonoBehaviour.itemData.type == ItemType.None || !isDragging)
             return;
 
         ReturnToFixPosition();
 
         GameObject result = UIRaycast();
-        // 이벤트 처리부분
+        // 이벤트 처리부분 : 드래그 끝(마우스 포인터)에 위치한 UI가 IDrag_Drop를 구현했으면
         if (result != null)
         {
             IDrag_Drop dragDrop = result.GetComponent<IDrag_Drop>();

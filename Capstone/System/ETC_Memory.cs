@@ -2,6 +2,7 @@ using Firebase.Database;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ETC_Memory : MonoBehaviour
 {
@@ -46,9 +47,19 @@ public class ETC_Memory : MonoBehaviour
         CursorUpdate();
     }
 
-    private void OnLevelWasLoaded(int level)
+    void OnSceneLoaded(Scene scene, LoadSceneMode level)
     {
         CursorUpdate();
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     public OptionData myOption;

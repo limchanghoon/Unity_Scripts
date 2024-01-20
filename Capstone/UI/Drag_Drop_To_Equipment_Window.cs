@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Drag_Drop_To_Equipment_Window : MonoBehaviour, IDrag_Drop
 {
-    public int part;
+    public Equipment_Part part;
     private ItemData_MonoBehaviour itemData_MonoBehaviour;
 
     private void Awake()
@@ -15,19 +15,10 @@ public class Drag_Drop_To_Equipment_Window : MonoBehaviour, IDrag_Drop
     public bool Drop(ItemData_MonoBehaviour itemData_Mono)
     {
         ItemData itemData = itemData_Mono.itemData;
-        if (itemData.type == '0' && ((Equipment_ItemData)itemData).part == part 
+        if (itemData.type == ItemType.Equipment && ((Equipment_ItemData)itemData).part == part 
             && itemData_Mono.itemWindow == ItemData_MonoBehaviour.ItemWindow.Inventory)
         {
-            if(itemData_MonoBehaviour.itemData.type == '-')
-            {
-                Debug.Log(itemData.itemName + "을 장비창으로 옮깁니다!");
-                CFirebase.Instance.WearEquipment((Equipment_ItemData)itemData, itemData_MonoBehaviour);
-            }
-            else
-            {
-                Debug.Log(itemData.itemName + "으로 스위칭합니다!");
-                CFirebase.Instance.SwitchEquipment((Equipment_ItemData)itemData, itemData_MonoBehaviour);
-            }
+            CFirebase.Instance.WearEquipment((Equipment_ItemData)itemData, itemData_MonoBehaviour);
             return true;
         }
         else

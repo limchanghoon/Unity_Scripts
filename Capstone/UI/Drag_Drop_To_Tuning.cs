@@ -38,40 +38,24 @@ public class Drag_Drop_To_Tuning : MonoBehaviour, IDrag_Drop
     private bool TurnOnTuningMode(ItemData _itemData)
     {
         Debug.Log("TurnOnTuningMode");
-        if (_itemData.type != '0')
+        if (_itemData.type != ItemType.Equipment)
         {
             DialogController.Instance.ShowDialog("장비 아이템이 아닙니다!");
             TurnOffTuningMode();
             return false;
         }
-        /*
-        int _id = ((Equipment_ItemData)_itemData).id;
-        if (!tuningShop.recipeList.ContainsKey(_id))
-        {
-            DialogController.Instance.ShowDialog("해당 아이템은 강화 불가입니다!");
-            Debug.Log("해당 아이템은 강화 불가입니다!");
-            TurnOffTuningMode();
-            return false;
-        }
-        if (tuningShop.recipeList[_id] == null)
-        {
-            DialogController.Instance.ShowDialog("해당 아이템은 강화 수치가 최대입니다!");
-            Debug.Log("해당 아이템은 강화 수치가 최대입니다!");
-            TurnOffTuningMode();
-            return false;
-        }
-        */
+
         if (InventoryController.Instance.curWindow == 2)
             InventoryController.Instance.Update_ETC_Inventory();
 
         bool ok = true;
         tune_Btn.interactable = false;
-        curItem = ((Equipment_ItemData)_itemData).part == 0 ? (Weapon_ItemData)_itemData : (Armor_ItemData)_itemData;
+        curItem = (Equipment_ItemData)_itemData;
         inputPage.SetActive(false);
         drop_Panel.enabled = false;
         tuningPage.SetActive(true);
 
-        string path = "Images/Items/" + InventoryController.part_names[curItem.part] + "/" + curItem.itemName;
+        string path = "Images/Items/" + curItem.part.ToString() + "/" + curItem.itemName;
         item_to_tune.sprite = Resources.Load<Sprite>(path);
 
         infoText.text ="+ " + curItem.level.ToString() + " " + curItem.itemName
@@ -160,18 +144,12 @@ public class Drag_Drop_To_Tuning : MonoBehaviour, IDrag_Drop
 
         curItem.level++;
         Task _tast;
-        if (curItem.part == 0)
-        {
+        if (curItem.part == Equipment_Part.Gun)
             ((Weapon_ItemData)curItem).attack += 2;
-            _tast = Task.Run(() =>
-            CFirebase.Instance.GetWeapon(curItem.uuid, curItem.id, curItem.itemName, curItem.level, ((Weapon_ItemData)curItem).attack));
-        }
         else
-        {
             ((Armor_ItemData)curItem).defense += 2;
-            _tast = Task.Run(() =>
-            CFirebase.Instance.GetArmor(curItem.uuid, curItem.id, curItem.itemName, curItem.part, curItem.level, ((Armor_ItemData)curItem).defense));
-        }
+
+        _tast = Task.Run(() => CFirebase.Instance.GetItem(curItem));
         await _tast;
 
         DialogController.Instance.ShowDialog("강화 성공!");

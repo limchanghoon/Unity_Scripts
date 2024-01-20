@@ -11,13 +11,13 @@ public class InventoryController : MonoBehaviour
     public List<Image> cells;
     List<TextMeshProUGUI> miniText;
     public List<Equipment_ItemData> equipments;
-    public List<ETC_ItemData> etcs;
+    public List<Other_ItemData> etcs;
     public Canvas canvas;
     public Transform top_Canvas_Tr;
     public Sprite back;
     public Scrollbar scrollbar;
     public RectTransform content;
-    public static string[] part_names = { "Gun", "Pendant", "Gloves", "Helmet", "Breastplate", "Boots" };
+    //public static string[] part_names = { "Gun", "Pendant", "Gloves", "Helmet", "Breastplate", "Boots" };
 
     public GameObject cellPrefab;
     public Transform cellParent;
@@ -48,7 +48,7 @@ public class InventoryController : MonoBehaviour
         {
             instance = this;
             equipments = new List<Equipment_ItemData>(new Equipment_ItemData[cells.Count]);
-            etcs = new List<ETC_ItemData>(new ETC_ItemData[cells.Count]);
+            etcs = new List<Other_ItemData>(new Other_ItemData[cells.Count]);
             miniText = new List<TextMeshProUGUI>(new TextMeshProUGUI[cells.Count]);
             for (int i = 0; i < cells.Count; i++)
             {
@@ -73,7 +73,7 @@ public class InventoryController : MonoBehaviour
         CFirebase.Instance.ReadEquipments();
     }
 
-    public ETC_ItemData Find_Item(string _itemName)
+    public Other_ItemData Find_Item(string _itemName)
     {
         foreach (var etc in etcs)
         {
@@ -141,7 +141,7 @@ public class InventoryController : MonoBehaviour
             else
             {
                 cells[i].transform.parent.gameObject.SetActive(true);
-                string path = "Images/Items/" + part_names[equipments[i].part] + "/" + equipments[i].itemName;
+                string path = "Images/Items/" + equipments[i].part.ToString() + "/" + equipments[i].itemName;
 
                 cells[i].GetComponent<Drag_Item>().ReturnToFixPosition();
 

@@ -23,8 +23,9 @@ public class UIRaycast : MonoBehaviour
 
     GameObject preObj = null;
 
-    private char curItemType = '\0';
-    private string curItemUUID = string.Empty;
+    private ItemData curItemData;
+    //private ItemType curItemType = ItemType.None;
+    //private string curItemUUID = string.Empty;
 
     private static UIRaycast instance;
     public static UIRaycast Instance
@@ -96,7 +97,7 @@ public class UIRaycast : MonoBehaviour
             if (raycastResults.Count > 0)
             {
                 ItemData_MonoBehaviour itemData_Mono = raycastResults[0].gameObject.GetComponent<ItemData_MonoBehaviour>();
-                if(itemData_Mono != null && itemData_Mono.itemData.type != '-')
+                if(itemData_Mono != null && itemData_Mono.itemData.type != ItemType.None)
                 {
 
                     Drag_Item drag_ = raycastResults[0].gameObject.GetComponent<Drag_Item>();
@@ -111,11 +112,7 @@ public class UIRaycast : MonoBehaviour
 
                     if (Input.GetMouseButtonDown(1) && itemData_Mono.itemWindow == ItemData_MonoBehaviour.ItemWindow.Inventory)
                     {
-                        curItemType = itemData_Mono.itemData.type;
-                        if(curItemType == '0')
-                            curItemUUID = ((Equipment_ItemData)itemData_Mono.itemData).uuid;
-                        else if(curItemType == '1')
-                            curItemUUID = itemData_Mono.itemData.itemName;
+                        curItemData = itemData_Mono.itemData;
                         itemDeleteObj.SetActive(true);
                     }
                     
@@ -128,7 +125,7 @@ public class UIRaycast : MonoBehaviour
                         preObj = raycastResults[0].gameObject;
                         string path;
 
-                        if (itemData_Mono.itemData.type == '1')
+                        if (itemData_Mono.itemData.type == ItemType.Other)
                         {
                             path = "Images/Items/" + itemData_Mono.itemData.itemName;
 
@@ -141,10 +138,10 @@ public class UIRaycast : MonoBehaviour
                             itemDf.gameObject.SetActive(true);
 
                             path = "Images/Items/"
-                                + InventoryController.part_names[((Equipment_ItemData)itemData_Mono.itemData).part]
+                                + ((Equipment_ItemData)itemData_Mono.itemData).part.ToString()
                                 + "/" + itemData_Mono.itemData.itemName;
 
-                            if (((Equipment_ItemData)itemData_Mono.itemData).part == 0)
+                            if (((Equipment_ItemData)itemData_Mono.itemData).part == Equipment_Part.Gun)
                             {
                                 itemAtk.text = "공격력 : " + ((Weapon_ItemData)itemData_Mono.itemData).attack;
                                 itemDf.text = "추가 체력 : 0";
@@ -158,7 +155,7 @@ public class UIRaycast : MonoBehaviour
 
                         itemImage.sprite = Resources.Load(path, typeof(Sprite)) as Sprite;
                         itemName.text = itemData_Mono.itemData.itemName;
-                        itemDescription.text = ItemMaster.Instance.itemDescriptionDic[itemData_Mono.itemData.id];
+                        itemDescription.text = ItemMaster.itemDescriptionDic[itemData_Mono.itemData.id];
                     }
 
                     if (pointer.position.x < Screen.width / 2)
@@ -209,10 +206,9 @@ public class UIRaycast : MonoBehaviour
     {
         Debug.Log("DeleteItem");
         itemDeleteObj.SetActive(false);
-        if (curItemType == '0')
-            CFirebase.Instance.DiscardEquipment(curItemUUID);
-        else if (curItemType == '1')
-            CFirebase.Instance.DisCardItem(curItemUUID);
+       
+        CFirebase.Instance.DiscardItem(curItemData);
+        //CFirebase.Instance.DiscardItem(curItemUUID, curItemType);
     }
 
     public void PreObjSetNull()
