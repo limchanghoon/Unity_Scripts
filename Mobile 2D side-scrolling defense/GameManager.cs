@@ -11,14 +11,12 @@ public class GameManager : MonoBehaviour
         get { return instance; }
     }
 
-    const int DEPTHMAX = 100000;
 
     [SerializeField] GameObject resultCanvas;
     [SerializeField] TextMeshProUGUI costText;
     [SerializeField] float generateRate;
     [SerializeField] int myResource;
     float timer = 0f;
-    int depth = DEPTHMAX;
 
     [SerializeField] Tower playerTower;
     [SerializeField] Tower enemyTower;
@@ -100,18 +98,17 @@ public class GameManager : MonoBehaviour
         costText.text = myResource.ToString();
     }
 
+    public void PlusResource(int cost)
+    {
+        myResource += cost;
+    }
+
     public bool ConsumeResource(int cost)
     {
         if (cost > myResource)
             return false;
         myResource -= cost;
         return true;
-    }
-
-    public int GetNextZ()
-    {
-        depth = depth - 1 < 0 ? DEPTHMAX : depth - 1;
-        return depth;
     }
 
     public StageData GetStageDataFromPlayerPrefs()

@@ -33,7 +33,7 @@ public class RangeAttackCheck : PoolingObject
         Invoke("DestroyObject", 3f);
     }
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         Gizmos.matrix = transform.localToWorldMatrix;
         Gizmos.DrawWireCube(Vector3.zero, myCubeSize);

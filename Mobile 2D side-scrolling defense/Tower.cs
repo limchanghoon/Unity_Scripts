@@ -36,8 +36,8 @@ public class Tower : MonoBehaviour,IHit
             return false;
 
         currentHP = currentHP - damage < 0 ? 0 : currentHP - damage;
-        var obj = PoolManager.Instance.damageTextPool.CreateOjbect();
-        obj.GetComponent<DamageText>().StartAnim(transform.position + textOffset, damage);
+        //var obj = PoolManager.Instance.damageTextPool.CreateOjbect();
+        //obj.GetComponent<DamageText>().StartAnim(transform.position + textOffset, damage);
         if (!isRed)
             StartCoroutine(SetRed());
         UpdateHPBar();

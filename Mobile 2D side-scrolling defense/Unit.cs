@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -55,22 +56,16 @@ public class Unit : PoolingObject, IHit, IGetHPbarTarget
     }
 
 
-    private void Update()
+
+    private void FixedUpdate()
     {
-        if (isDie)  return;
+        if (isDie || GameManager.Instance.gameState != GameState.Play) return;
         if (GameManager.Instance.gameState == GameState.Win || GameManager.Instance.gameState == GameState.Lose)
         {
             if (!isFinishingPose)
                 StartCoroutine(SetFinishingPoseCoroutine());
             return;
         }
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("move"))
-            transform.Translate(Time.deltaTime * unitData.moveSpeed, 0f, 0f);
-    }
-
-    private void FixedUpdate()
-    {
-        if (isDie || GameManager.Instance.gameState != GameState.Play) return;
         if (isMine)
             hit = Physics2D.Raycast((Vector2)transform.position + unitData.rayOffset, Vector2.right, unitData.rayDistance, 1 << LayerMask.NameToLayer("Enemy"));
         else
@@ -84,9 +79,11 @@ public class Unit : PoolingObject, IHit, IGetHPbarTarget
         }
         else
         {
-
             animator.SetBool("Move", true);
         }
+
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("move"))
+            transform.Translate(Time.fixedDeltaTime * unitData.moveSpeed, 0f, 0f);
     }
 
     IEnumerator CooldownCoroutine()
@@ -108,7 +105,15 @@ public class Unit : PoolingObject, IHit, IGetHPbarTarget
         if(hit)
             hit.transform.GetComponent<IHit>().Hit(unitData.power);
     }
-
+    
+    void OnDrawGizmosSelected()
+    {
+        if (unitData == null)
+            return;
+        Gizmos.color = Color.red;
+        Gizmos.DrawRay(transform.position + (Vector3)unitData.rayOffset, Vector3.right * unitData.rayDistance);
+    }
+    
     IEnumerator SetFinishingPoseCoroutine()
     {
         isFinishingPose = true;
@@ -155,8 +160,8 @@ public class Unit : PoolingObject, IHit, IGetHPbarTarget
             return false;
 
         currentHP -= damage;
-        var obj = PoolManager.Instance.damageTextPool.CreateOjbect();
-        obj.GetComponent<DamageText>().StartAnim((Vector2)transform.position + unitData.textOffset, damage);
+        //var obj = PoolManager.Instance.damageTextPool.CreateOjbect();
+        //obj.GetComponent<DamageText>().StartAnim((Vector2)transform.position + unitData.textOffset, damage);
         if(!isRed)
             StartCoroutine(SetRed());
         UpdateHPBar();
@@ -229,14 +234,6 @@ public class Unit : PoolingObject, IHit, IGetHPbarTarget
     public UnitEnum GetUnitEnum()
     {
         return unitEnum;
-    }
-
-    void OnDrawGizmos()
-    {
-        if (unitData == null)
-            return;
-        Gizmos.color = Color.red;
-        Gizmos.DrawRay(transform.position + (Vector3)unitData.rayOffset, Vector3.right * unitData.rayDistance);
     }
 }
 
