@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
         get { return instance; }
     }
 
+    const int DEPTHMAX = 100000;
+    int depth = DEPTHMAX;
 
     [SerializeField] GameObject resultCanvas;
     [SerializeField] TextMeshProUGUI costText;
@@ -109,6 +111,12 @@ public class GameManager : MonoBehaviour
             return false;
         myResource -= cost;
         return true;
+    }
+
+    public int GetNextZ()
+    {
+        depth = depth - 1 < 0 ? DEPTHMAX : depth - 1;
+        return depth;
     }
 
     public StageData GetStageDataFromPlayerPrefs()

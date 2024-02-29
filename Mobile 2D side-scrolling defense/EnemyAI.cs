@@ -39,7 +39,7 @@ public class EnemyAI : MonoBehaviour
     {
         var obj = PoolManager.Instance.enemyPool[i].CreateOjbect();
         var unit = obj.GetComponent<Unit>();
-        obj.transform.position = unit.GetUnitData().spawnPosition + Vector2.right * Random.Range(-0.3f, 0.3f);
+        obj.transform.position = new Vector3(unit.GetUnitData().spawnPosition.x + Random.Range(-0.3f, 0.3f), unit.GetUnitData().spawnPosition.y, GameManager.Instance.GetNextZ());
         var hpBar = PoolManager.Instance.hpbarPool.CreateOjbect().GetComponent<HPBar>();
         hpBar.SetTarget(obj.GetComponent<IGetHPbarTarget>().GetHPbarTarget());
         unit.BindHpbar(hpBar);

@@ -80,10 +80,9 @@ public class Unit : PoolingObject, IHit, IGetHPbarTarget
         else
         {
             animator.SetBool("Move", true);
+            if (animator.GetCurrentAnimatorStateInfo(0).IsName("move"))
+                transform.Translate(Time.fixedDeltaTime * unitData.moveSpeed, 0f, 0f);
         }
-
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("move"))
-            transform.Translate(Time.fixedDeltaTime * unitData.moveSpeed, 0f, 0f);
     }
 
     IEnumerator CooldownCoroutine()
