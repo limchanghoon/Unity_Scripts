@@ -33,5 +33,5 @@
 ## Mobile 2D side-scrolling defense
 게임목록(영상)
 - [영상](https://www.youtube.com/watch?v=W45_aIb3Bus)
-- [![Video Label](http://img.youtube.com/vi/W45_aIb3Bus/0.jpg)](www.youtube.com/watch?v=W45_aIb3Bus)
+- [![Video Label](http://img.youtube.com/vi/W45_aIb3Bus/0.jpg)](https://www.youtube.com/watch?v=W45_aIb3Bus)
 ---
